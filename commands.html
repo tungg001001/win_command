@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Windows 網路指令大全</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Windows 網路指令大全</h1>
+
+<p>Networking Command Reference</p>
+
+</header>
+
+<nav>
+
+<a href="index.html">首頁</a>
+<a href="commands.html">指令大全</a>
+<a href="quiz.html">測驗</a>
+
+</nav>
+
+<main>
+
+<h2>常用 Windows 網路指令</h2>
+
+<div class="card">
+
+<h3>1. ipconfig</h3>
+
+<p>查看 Windows 網路設定。</p>
+
+<pre>
+ipconfig
+</pre>
+
+<p>查看完整資訊：</p>
+
+<pre>
+ipconfig /all
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>2. ping</h3>
+
+<p>測試網路連線。</p>
+
+<pre>
+ping 8.8.8.8
+</pre>
+
+<p>測試 ESP32：</p>
+
+<pre>
+ping 192.168.1.100
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>3. nslookup</h3>
+
+<p>查詢 DNS。</p>
+
+<pre>
+nslookup google.com
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>4. tracert</h3>
+
+<p>查看封包經過的路由。</p>
+
+<pre>
+tracert google.com
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>5. arp</h3>
+
+<p>查看 ARP Table。</p>
+
+<pre>
+arp -a
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>6. netstat</h3>
+
+<p>查看目前 TCP / UDP 連線。</p>
+
+<pre>
+netstat -ano
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>7. route</h3>
+
+<p>查看 Windows Routing Table。</p>
+
+<pre>
+route print
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>8. netsh</h3>
+
+<p>查看 Wi-Fi 狀態。</p>
+
+<pre>
+netsh wlan show interfaces
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>9. curl</h3>
+
+<p>測試 HTTP 網頁。</p>
+
+<pre>
+curl https://example.com
+</pre>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>10. PowerShell</h3>
+
+<p>測試 TCP Port。</p>
+
+<pre>
+Test-NetConnection 192.168.1.100 -Port 80
+</pre>
+
+</div>
+
+</main>
+
+</body>
+
+</html>
