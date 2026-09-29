@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Windows 網路測驗</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Windows 網路指令測驗</h1>
+
+</header>
+
+<main>
+
+<div class="card">
+
+<h2>題目 1</h2>
+
+<p>哪一個指令可以查看 Windows IP 位址？</p>
+
+<button onclick="answer(1)">
+A. ping
+</button>
+
+<button onclick="answer(2)">
+B. ipconfig
+</button>
+
+<button onclick="answer(3)">
+C. tracert
+</button>
+
+<p id="result"></p>
+
+</div>
+
+</main>
+
+<script>
+
+function answer(choice) {
+
+if (choice === 2) {
+
+document.getElementById("result").innerHTML =
+"✅ 正確！ipconfig 可以查看 IP 設定。";
+
+} else {
+
+document.getElementById("result").innerHTML =
+"❌ 再想想看。";
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
