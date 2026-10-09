@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows 網路指令互動教學與實戰測驗系統</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .code-font {
+      font-family: 'Fira Code', monospace;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Navigation Header -->
+  <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-500/20">
+            <i class="fa-solid fa-terminal text-xl"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg text-white leading-tight">Windows 網路指令學習系統</h1>
+            <p class="text-xs text-slate-400">速查、故障排除與實戰測驗</p>
+          </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <nav class="hidden lg:flex space-x-1 bg-slate-900/80 p-1.5 rounded-xl border border-slate-700">
+          <button onclick="switchTab('cheatsheet')" id="nav-cheatsheet" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 bg-blue-600 text-white shadow">
+            <i class="fa-solid fa-book-open mr-1.5"></i>指令速查表
+          </button>
+          <button onclick="switchTab('builder')" id="nav-builder" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-all duration-200">
+            <i class="fa-solid fa-sliders mr-1.5"></i>動態生成器
+          </button>
+          <button onclick="switchTab('troubleshoot')" id="nav-troubleshoot" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-all duration-200">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>排錯精靈
+          </button>
+          <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-all duration-200">
+            <i class="fa-solid fa-vial mr-1.5"></i>學生實戰測驗
+          </button>
+          <button onclick="switchTab('teacher')" id="nav-teacher" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-all duration-200">
+            <i class="fa-solid fa-user-tie mr-1.5"></i>教師管理專區
+          </button>
+        </nav>
+
+        <!-- Mobile menu button -->
+        <div class="lg:hidden">
+          <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu" class="hidden lg:hidden border-b border-slate-700 bg-slate-800 px-4 pt-2 pb-4 space-y-2">
+      <button onclick="switchTab('cheatsheet')" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-700"><i class="fa-solid fa-book-open mr-2"></i>指令速查表</button>
+      <button onclick="switchTab('builder')" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-700"><i class="fa-solid fa-sliders mr-2"></i>動態生成器</button>
+      <button onclick="switchTab('troubleshoot')" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-700"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>排錯精靈</button>
+      <button onclick="switchTab('quiz')" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-700"><i class="fa-solid fa-vial mr-2"></i>學生實戰測驗</button>
+      <button onclick="switchTab('teacher')" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-700"><i class="fa-solid fa-user-tie mr-2"></i>教師管理專區</button>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- TAB 1: Cheat Sheet -->
+    <section id="sec-cheatsheet" class="tab-content block space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-800 p-4 rounded-xl border border-slate-700">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+          <input type="text" id="search-input" oninput="filterCommands()" placeholder="搜尋指令名稱、用途說明或範例 (例: ipconfig, DNS, ping)..." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+          <span class="text-xs text-slate-400 whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i>分類：</span>
+          <button onclick="filterCategory('all')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white whitespace-nowrap">全部</button>
+          <button onclick="filterCategory('diagnostic')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-700 text-slate-300 hover:bg-slate-600 whitespace-nowrap">連線診斷</button>
+          <button onclick="filterCategory('config')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-700 text-slate-300 hover:bg-slate-600 whitespace-nowrap">設定資訊</button>
+          <button onclick="filterCategory('dns')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-700 text-slate-300 hover:bg-slate-600 whitespace-nowrap">DNS解析</button>
+          <button onclick="filterCategory('advanced')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-700 text-slate-300 hover:bg-slate-600 whitespace-nowrap">進階管理</button>
+        </div>
+      </div>
+
+      <div id="command-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Dynamic Cards Inserted Here -->
+      </div>
+    </section>
+
+    <!-- TAB 2: Dynamic Command Builder -->
+    <section id="sec-builder" class="tab-content hidden space-y-6">
+      <div class="bg-slate-800 rounded-xl border border-slate-700 p-6">
+        <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-blue-500"></i> 動態指令參數生成器
+        </h2>
+        <p class="text-xs text-slate-400 mb-6">點選指令並微調自訂參數，系統將自動合成對應的 Windows CMD 命令。</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-4">
+            <label class="block text-sm font-medium text-slate-300">選擇指令</label>
+            <select id="builder-select" onchange="updateBuilderForm()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 text-sm">
+              <option value="ping">ping - 測試網路連線與回應延遲</option>
+              <option value="ipconfig">ipconfig - 檢視與刷新 IP 設定</option>
+              <option value="tracert">tracert - 追蹤路由節點</option>
+              <option value="nslookup">nslookup - 查詢 DNS 域名解析</option>
+              <option value="netstat">netstat - 查看連線與通訊埠 (Port)</option>
+            </select>
+            <div id="builder-desc" class="p-3 bg-slate-900/60 rounded-lg border border-slate-700/50 text-xs text-slate-300 leading-relaxed">
+              指令說明載入中...
+            </div>
+          </div>
+
+          <div class="md:col-span-2 space-y-4 bg-slate-900/40 p-5 rounded-xl border border-slate-700/60">
+            <h3 class="text-xs font-semibold text-slate-200 border-b border-slate-700 pb-2 uppercase tracking-wider">參數配置設定</h3>
+            <div id="builder-controls" class="space-y-4">
+              <!-- Dynamically populated options -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Banner -->
+        <div class="mt-6 bg-slate-950 rounded-xl p-5 border border-slate-800 relative">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-blue-400 uppercase tracking-wider">產出的命令語法</span>
+            <button onclick="copyToClipboard('builder-result-text')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
+              <i class="fa-regular fa-copy"></i> 複製指令
+            </button>
+          </div>
+          <div id="builder-result-text" class="code-font text-green-400 text-lg sm:text-xl font-bold break-all select-all">
+            ping google.com
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Troubleshooting Wizard -->
+    <section id="sec-troubleshoot" class="tab-content hidden space-y-6">
+      <div class="bg-slate-800 rounded-xl border border-slate-700 p-6">
+        <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> 互動式網路故障排除精靈
+        </h2>
+        <p class="text-xs text-slate-400 mb-6">點選您目前遭遇的網路異常情境，系統將導引對應的檢測順序與指令。</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <button onclick="loadTroubleshootScenario('no_internet')" class="ts-btn text-left p-4 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-slate-800 transition-all">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="p-2.5 rounded-lg bg-red-500/20 text-red-400"><i class="fa-solid fa-wifi text-lg"></i></div>
+              <span class="font-bold text-slate-100 text-sm">完全無法連線上網</span>
+            </div>
+            <p class="text-xs text-slate-400">網頁打不開，不清楚是網卡、路由器還是外網異常。</p>
+          </button>
+
+          <button onclick="loadTroubleshootScenario('dns_issue')" class="ts-btn text-left p-4 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-slate-800 transition-all">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="p-2.5 rounded-lg bg-yellow-500/20 text-yellow-400"><i class="fa-solid fa-globe text-lg"></i></div>
+              <span class="font-bold text-slate-100 text-sm">能連 IP 但開不了網頁</span>
+            </div>
+            <p class="text-xs text-slate-400">可成功 Ping 通 8.8.8.8，但輸入網址無回應。</p>
+          </button>
+
+          <button onclick="loadTroubleshootScenario('slow_network')" class="ts-btn text-left p-4 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-slate-800 transition-all">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="p-2.5 rounded-lg bg-blue-500/20 text-blue-400"><i class="fa-solid fa-gauge-high text-lg"></i></div>
+              <span class="font-bold text-slate-100 text-sm">連線延遲過高或封包遺失</span>
+            </div>
+            <p class="text-xs text-slate-400">網路卡頓、遊戲爆 Ping，需要定位瓶頸節點。</p>
+          </button>
+        </div>
+
+        <!-- Wizard Step Box -->
+        <div id="ts-wizard-box" class="hidden bg-slate-900/90 border border-slate-700 rounded-xl p-6 relative">
+          <div id="ts-content"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Student Quiz -->
+    <section id="sec-quiz" class="tab-content hidden space-y-6">
+      
+      <!-- STEP 1: Student Information Form -->
+      <div id="quiz-student-form-card" class="bg-slate-800 rounded-xl border border-slate-700 p-6 md:p-8 max-w-lg mx-auto shadow-2xl">
+        <div class="text-center mb-6">
+          <div class="inline-flex p-3 rounded-2xl bg-blue-600/20 text-blue-400 mb-3">
+            <i class="fa-solid fa-user-graduate text-3xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">學生實戰測驗入口</h2>
+          <p class="text-xs text-slate-400 mt-1">請填寫完整的班級、座號與姓名開始進行線上測驗</p>
+        </div>
+
+        <form id="student-info-form" onsubmit="event.preventDefault(); startQuizProcess();" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">班級 <span class="text-red-400">*</span></label>
+            <input type="text" id="student-class" required placeholder="例如：資訊三甲 或 301" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500">
+          </div>
+          
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">座號 <span class="text-red-400">*</span></label>
+            <input type="number" id="student-seat" min="1" max="99" required placeholder="例如：08" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">姓名 <span class="text-red-400">*</span></label>
+            <input type="text" id="student-name" required placeholder="例如：王小明" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500">
+          </div>
+
+          <div class="p-3 bg-blue-950/40 border border-blue-800/50 rounded-lg text-xs text-blue-300 flex items-center gap-2 mt-2">
+            <i class="fa-solid fa-circle-info text-blue-400 shrink-0"></i>
+            <span>測驗包含 20 題選擇題，系統會記時並自動結算成績儲存。</span>
+          </div>
+
+          <button type="submit" class="w-full mt-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-play"></i> 開始進行測驗
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 2: Active Quiz Screen -->
+      <div id="quiz-active-card" class="hidden space-y-6">
+        <!-- Student Info Header -->
+        <div class="bg-slate-800 rounded-xl border border-slate-700 p-4 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="bg-blue-600/20 text-blue-400 p-2 rounded-lg"><i class="fa-solid fa-address-card"></i></div>
+            <div>
+              <span class="text-xs text-slate-400 block">考生資訊</span>
+              <div id="quiz-header-student-info" class="font-semibold text-slate-200 text-sm">班級: - | 座號: - | 姓名: -</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="text-right">
+              <span class="text-xs text-slate-400 block">答題進度</span>
+              <div id="quiz-progress-text" class="font-bold text-blue-400 text-sm">1 / 20</div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 block">計時器</span>
+              <div id="quiz-timer" class="code-font font-bold text-yellow-400 text-sm">00:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Box -->
+        <div class="bg-slate-800 rounded-xl border border-slate-700 p-6 space-y-6">
+          <div>
+            <span id="quiz-q-category" class="inline-block px-2.5 py-1 text-xs rounded-full bg-blue-900/60 text-blue-300 font-medium mb-2">網路概念</span>
+            <h3 id="quiz-q-text" class="text-lg sm:text-xl font-bold text-white">問題載入中...</h3>
+          </div>
+
+          <div id="quiz-options-container" class="space-y-3">
+            <!-- Dynamic Options -->
+          </div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-slate-700">
+            <span class="text-xs text-slate-400">點選答案即自動進入下一題</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Quiz Result Screen -->
+      <div id="quiz-result-card" class="hidden bg-slate-800 rounded-xl border border-slate-700 p-6 md:p-8 max-w-2xl mx-auto space-y-6 text-center">
+        <div class="inline-flex p-4 rounded-full bg-green-500/20 text-green-400">
+          <i class="fa-solid fa-trophy text-4xl"></i>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-white">測驗完成！</h2>
+          <div id="result-student-info" class="text-sm font-medium text-slate-300 mt-2 bg-slate-900/60 py-2 px-4 rounded-lg inline-block">
+            <!-- 班級: xxx | 座號: xx | 姓名: xxx -->
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 py-4 border-y border-slate-700">
+          <div class="p-3 bg-slate-900/50 rounded-lg">
+            <span class="block text-xs text-slate-400">測驗總分</span>
+            <span id="result-score" class="text-3xl font-extrabold text-blue-400">0</span>
+            <span class="text-xs text-slate-500">/ 100</span>
+          </div>
+          <div class="p-3 bg-slate-900/50 rounded-lg">
+            <span class="block text-xs text-slate-400">答對題數</span>
+            <span id="result-correct" class="text-3xl font-extrabold text-green-400">0</span>
+            <span class="text-xs text-slate-500">/ 20</span>
+          </div>
+          <div class="p-3 bg-slate-900/50 rounded-lg">
+            <span class="block text-xs text-slate-400">總花費時間</span>
+            <span id="result-time" class="text-xl font-bold text-yellow-400 code-font">00:00</span>
+          </div>
+        </div>
+
+        <!-- Detailed Breakdown -->
+        <div class="text-left space-y-3">
+          <h4 class="font-semibold text-slate-200 text-xs uppercase tracking-wider">試題解析與答題檢討</h4>
+          <div id="result-breakdown" class="max-h-60 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+            <!-- Dynamic Breakdown items -->
+          </div>
+        </div>
+
+        <button onclick="resetToStudentForm()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 rounded-lg transition-colors text-sm">
+          <i class="fa-solid fa-arrow-rotate-left mr-1.5"></i> 返回學生登記頁面
+        </button>
+      </div>
+
+    </section>
+
+    <!-- TAB 5: Teacher Management Portal -->
+    <section id="sec-teacher" class="tab-content hidden space-y-6">
+      
+      <!-- Teacher Login Card (When NOT logged in) -->
+      <div id="teacher-login-card" class="bg-slate-800 rounded-xl border border-slate-700 p-6 max-w-md mx-auto space-y-5 shadow-2xl">
+        <div class="text-center">
+          <div class="inline-flex p-3 rounded-2xl bg-purple-600/20 text-purple-400 mb-2">
+            <i class="fa-solid fa-lock text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white">教師管理專區驗證</h3>
+          <p class="text-xs text-slate-400 mt-1">請輸入教師權限密碼以進行系統管理</p>
+        </div>
+
+        <form onsubmit="event.preventDefault(); verifyTeacherPassword();" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">管理密碼</label>
+            <input type="password" id="teacher-pwd-input" placeholder="請輸入教師密碼" autocomplete="current-password"
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 text-sm focus:outline-none focus:border-purple-500">
+            <p id="teacher-login-error" class="hidden text-xs text-red-400 mt-1.5 flex items-center gap-1">
+              <i class="fa-solid fa-circle-exclamation"></i> 密碼錯誤，請重新輸入。
+            </p>
+          </div>
+          <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm shadow">
+            驗證並進入後台
+          </button>
+        </form>
+      </div>
+
+      <!-- Teacher Admin Dashboard (When logged in) -->
+      <div id="teacher-panel" class="hidden space-y-6">
+        
+        <!-- Header Banner & Logout Bar -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="p-3 bg-purple-600/20 text-purple-400 rounded-xl">
+              <i class="fa-solid fa-user-shield text-xl"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">教師管理控制台</h2>
+              <p class="text-xs text-slate-400">可檢視學生成績紀錄、匯出 CSV 檔以及維護測驗題庫</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="exportResultsCSV()" class="bg-green-600 hover:bg-green-500 text-white px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-file-csv"></i> 匯出成績 CSV
+            </button>
+            <button onclick="teacherLogout()" class="bg-slate-700 hover:bg-red-600 text-white px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-right-from-bracket"></i> 登出管理後台
+            </button>
+          </div>
+        </div>
+
+        <!-- Student Results Dashboard -->
+        <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-lg space-y-4 p-5">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-slate-700">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-blue-400"></i> 學生實戰測驗成績紀錄
+            </h3>
+            
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                <input type="text" id="teacher-search-input" oninput="renderTeacherResults()" placeholder="搜尋姓名、班級、座號..." 
+                  class="bg-slate-900 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-purple-500 w-48">
+              </div>
+              
+              <button onclick="clearAllResults()" class="text-xs text-red-400 hover:text-red-300 font-medium px-2 py-1 rounded border border-red-900/50 bg-red-950/30">
+                <i class="fa-solid fa-trash mr-1"></i> 清空所有紀錄
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900 text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                <tr>
+                  <th class="px-4 py-3 cursor-pointer hover:text-white" onclick="sortTeacherResults('class_seat')">
+                    班級 <i class="fa-solid fa-sort text-slate-500"></i>
+                  </th>
+                  <th class="px-4 py-3">座號</th>
+                  <th class="px-4 py-3">姓名</th>
+                  <th class="px-4 py-3 cursor-pointer hover:text-white" onclick="sortTeacherResults('score')">
+                    得分 <i class="fa-solid fa-sort text-slate-500"></i>
+                  </th>
+                  <th class="px-4 py-3">答對題數</th>
+                  <th class="px-4 py-3">測驗費時</th>
+                  <th class="px-4 py-3">完成日期時間</th>
+                </tr>
+              </thead>
+              <tbody id="teacher-results-tbody" class="divide-y divide-slate-700/60 bg-slate-800/50">
+                <!-- Dynamic Results Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Question Bank Manager -->
+        <div class="bg-slate-800 rounded-xl border border-slate-700 p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-database text-purple-400"></i> 測驗題庫管理 (共 <span id="question-count-tag" class="text-purple-300 font-bold">20</span> 題)
+            </h3>
+            <div class="flex items-center gap-2">
+              <button onclick="openAddQuestionModal()" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors">
+                <i class="fa-solid fa-plus"></i> 新增題目
+              </button>
+              <button onclick="resetQuestionsToDefault()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors">
+                <i class="fa-solid fa-rotate-left"></i> 重置為預設題庫
+              </button>
+            </div>
+          </div>
+
+          <div id="teacher-questions-list" class="space-y-3 max-h-96 overflow-y-auto pr-1 custom-scrollbar">
+            <!-- Dynamic Questions List Display -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Modal for Adding Question -->
+  <div id="add-q-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <h3 class="text-md font-bold text-white"><i class="fa-solid fa-folder-plus text-purple-400 mr-1.5"></i> 新增測驗題目</h3>
+        <button onclick="closeAddQuestionModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); saveNewQuestion();" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">題目分類</label>
+          <input type="text" id="new-q-cat" required placeholder="例如：基礎指令、連線診斷..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">題目內容</label>
+          <textarea id="new-q-text" required rows="2" placeholder="請輸入題目敘述..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-medium text-slate-300 mb-1">選項 A</label>
+            <input type="text" id="new-q-opt0" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-300 mb-1">選項 B</label>
+            <input type="text" id="new-q-opt1" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-300 mb-1">選項 C</label>
+            <input type="text" id="new-q-opt2" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-300 mb-1">選項 D</label>
+            <input type="text" id="new-q-opt3" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">正確答案選項</label>
+          <select id="new-q-correct" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white">
+            <option value="0">選項 A</option>
+            <option value="1">選項 B</option>
+            <option value="2">選項 C</option>
+            <option value="3">選項 D</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-700">
+          <button type="button" onclick="closeAddQuestionModal()" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200">取消</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold">儲存新題目</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-blue-600 text-white px-4 py-2.5 rounded-lg shadow-xl text-xs hidden flex items-center gap-2 transition-all z-50">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toast-message">操作成功</span>
+  </div>
+
+  <script>
+    // --- DATA STORE ---
+    const defaultCommands = [
+      {
+        id: "ipconfig",
+        name: "ipconfig",
+        category: "config",
+        title: "IP 設定與網路卡資訊顯示",
+        description: "顯示所有目前 TCP/IP 網路設定值，並可重新整理 DHCP 與 DNS 快取設定。",
+        syntax: "ipconfig [/all] [/renew] [/release] [/flushdns]",
+        example: "ipconfig /all",
+        notes: "最常用於確認本機 IP 位址、子網遮罩及預設閘道。"
+      },
+      {
+        id: "ping",
+        name: "ping",
+        category: "diagnostic",
+        title: "測試 ICMP 網路連線狀態",
+        description: "傳送 ICMP Echo Request 封包至目標主機，用來驗證 IP 等級的連線能力與延遲狀態。",
+        syntax: "ping [-t] [-n count] [-l size] target_name",
+        example: "ping -t 8.8.8.8",
+        notes: "若顯示 Destination Host Unreachable 代表區域連線問題，Request Timed Out 則可能被防火牆阻擋。"
+      },
+      {
+        id: "tracert",
+        name: "tracert",
+        category: "diagnostic",
+        title: "追蹤到達目標主機的路由路徑",
+        description: "透過變更 ICMP 封包的 TTL (Time to Live) 值，找出封包到達目的地經過的路由器節點。",
+        syntax: "tracert [-d] [-h max_hops] target_name",
+        example: "tracert -d www.google.com",
+        notes: "參數 -d 可停用名稱解析，大幅提升追蹤速度。"
+      },
+      {
+        id: "nslookup",
+        name: "nslookup",
+        category: "dns",
+        title: "DNS 域名解析診斷工具",
+        description: "查詢 DNS 伺服器記錄，用於測試域名解析是否正常或查找 IP 相對應之 Domain。",
+        syntax: "nslookup [domain] [dns_server]",
+        example: "nslookup www.k12ea.gov.tw 168.95.1.1",
+        notes: "可進入互動模式進行更深度的 MX, TXT 等 DNS 紀錄查詢。"
+      },
+      {
+        id: "netstat",
+        name: "netstat",
+        category: "advanced",
+        title: "顯示網路連線與通訊埠狀態",
+        description: "顯示使用中的 TCP 連線、電腦監聽的 Port、乙太網路統計數字以及 IP 路由表。",
+        syntax: "netstat [-a] [-n] [-o] [-e] [-r]",
+        example: "netstat -ano",
+        notes: "搭配 -o 可以取得產生該連線的 PID (程序識別碼)，方便查找可疑程式。"
+      },
+      {
+        id: "arp",
+        name: "arp",
+        category: "advanced",
+        title: "位址解析協定快取表管理",
+        description: "顯示並修改 ARP (Address Resolution Protocol) 快取表中的 IP 位址與實體 MAC 位址對映關係。",
+        syntax: "arp -a [inet_addr] | -d [inet_addr]",
+        example: "arp -a",
+        notes: "用於檢查區域網路內是否有 MAC 位址衝突或 ARP 欺騙攻擊。"
+      },
+      {
+        id: "pathping",
+        name: "pathping",
+        category: "diagnostic",
+        title: "結合 Ping 與 Tracert 的路徑封包遺失率分析",
+        description: "追蹤路由節點，並在指定時間內向各節點發送封包以計算結點封包遺失率。",
+        syntax: "pathping [-n] [-h max_hops] target_name",
+        example: "pathping www.microsoft.com",
+        notes: "需花費數分鐘時間運算，能精確找出網路瓶頸所在節點。"
+      },
+      {
+        id: "route",
+        name: "route",
+        category: "advanced",
+        title: "本機 IP 路由表檢視與操作",
+        description: "用於手動檢視、新增、刪除或修改 Windows 操作系統的網路 IP 路由表。",
+        syntax: "route print | add [destination] mask [subnet] [gateway]",
+        example: "route print",
+        notes: "常用於多網卡環境下設定特定網段走指定 Gateway。"
+      }
+    ];
+
+    const defaultQuestions = [
+      { id: 1, category: "基礎指令", text: "若要清除本機 DNS 快取資料，應使用下列哪一個指令組合？", options: ["ipconfig /all", "ipconfig /flushdns", "nslookup /clear", "netstat -flush"], correct: 1 },
+      { id: 2, category: "連線測試", text: "使用 Ping 指令時，加上哪一個參數可以對目標主機進行連續不間斷的測試？", options: ["-a", "-n 100", "-t", "-w"], correct: 2 },
+      { id: 3, category: "路由追蹤", text: "Tracert 指令主要是透過修改封包中的哪一個欄位來探測中間的路由器？", options: ["MAC Address", "TTL (Time to Live)", "TCP Port", "Subnet Mask"], correct: 1 },
+      { id: 4, category: "DNS查詢", text: "想查詢 www.example.com 的 IP 並且指定使用 8.8.8.8 作為 DNS 伺服器，指令為何？", options: ["ping www.example.com 8.8.8.8", "nslookup www.example.com 8.8.8.8", "ipconfig /dns www.example.com 8.8.8.8", "netstat www.example.com 8.8.8.8"], correct: 1 },
+      { id: 5, category: "連線診斷", text: "若要查看目前系統所有開啟的 TCP 埠號 (Port) 及其對應的程序 PID，應執行？", options: ["netstat -ano", "ipconfig /all", "arp -a", "route print"], correct: 0 },
+      { id: 6, category: "網卡資訊", text: "哪一個指令可以列出包含實體卡號 (MAC Address) 及 DHCP 租約時間等最詳細的網卡資訊？", options: ["ipconfig", "ipconfig /show", "ipconfig /all", "netstat -e"], correct: 2 },
+      { id: 7, category: "IP釋放與更新", text: "在自動取得 IP (DHCP) 的環境下，欲釋放目前向伺服器取得的 IP，該下哪一個指令？", options: ["ipconfig /renew", "ipconfig /release", "ipconfig /drop", "ipconfig /clean"], correct: 1 },
+      { id: 8, category: "ARP協定", text: "檢視目前本機 ARP 快取表（IP 與 MAC 位址的對照表）的指令為：", options: ["arp -g", "arp -a", "arp -s", "arp -d"], correct: 1 },
+      { id: 9, category: "路由表", text: "若要顯示 Windows 系統目前的完整 IP 路由表，可以使用下列何者？", options: ["route print", "ipconfig /route", "tracert -r", "netstat -p"], correct: 0 },
+      { id: 10, category: "進階診斷", text: "Pathping 指令結合了哪兩個網路工具的功能？", options: ["ping 與 nslookup", "ping 與 tracert", "tracert 與 netstat", "ipconfig 與 arp"], correct: 1 },
+      { id: 11, category: "快速追蹤", text: "執行 tracert 時加上 -d 參數的主要效果為何？", options: ["加快速度，不將 IP 位址解析為主機名稱", "詳細顯示每個節點的時間戳記", "刪除測試過程中的封包紀錄", "顯示診斷細節資訊"], correct: 0 },
+      { id: 12, category: "連線狀態", text: "netstat 指令結果中顯示 LISTENING 代表什麼狀態？", options: ["已經建立連線", "正在連線中", "該埠號正處於監聽等待連線狀態", "連線已關閉"], correct: 2 },
+      { id: 13, category: "DNS診斷", text: "當您無法開啟網頁，但能 ping 通 168.95.1.1，最可能的原因是？", options: ["網線完全斷裂", "網卡故障", "DNS 解析服務異常", "IP 設定衝突"], correct: 2 },
+      { id: 14, category: "Ping測試", text: "Ping 指令中參數 -l (小寫 L) 的作用是？", options: ["指定傳送 Echo 封包的資料大小 (Bytes)", "指定 Ping 的次數", "自動紀錄路由", "解析主機名稱"], correct: 0 },
+      { id: 15, category: "網路通訊", text: "HTTP 服務預設使用的網頁通訊埠 (Port) 為何？", options: ["21", "22", "80", "443"], correct: 2 },
+      { id: 16, category: "網路通訊", text: "加密安全網頁傳輸 HTTPS 預設使用的通訊埠 (Port) 為何？", options: ["80", "110", "443", "8080"], correct: 2 },
+      { id: 17, category: "預設閘道", text: "預設閘道 (Default Gateway) 通常在區域網路中扮演什麼角色？", options: ["負責域名轉換", "區網連接外部網際網路的出口路由器", "自動指派 IP 的主機", "儲存網頁快取的伺服器"], correct: 1 },
+      { id: 18, category: "IP設定", text: "在 IPv4 環境中，下列何者屬於私有 IP (Private IP) 範圍？", options: ["8.8.8.8", "172.217.160.0", "192.168.1.50", "140.112.1.1"], correct: 2 },
+      { id: 19, category: "命令提示字元", text: "在 Windows CMD 中，若要中斷正在持續執行的 ping -t 命令，應按下什麼快捷鍵？", options: ["Ctrl + Z", "Ctrl + C", "Alt + F4", "Esc"], correct: 1 },
+      { id: 20, category: "診斷實務", text: "執行 ipconfig /renew 的主要目的是什麼？", options: ["向 DHCP 伺服器重新申請取得 IP 位址", "重新啟動電腦的網卡", "更新 DNS 伺服器的 IP", "清除系統臨時檔案"], correct: 0 }
+    ];
+
+    // State Variables
+    let currentQuestions = JSON.parse(localStorage.getItem('win_cmd_questions') || JSON.stringify(defaultQuestions));
+    let quizStudentInfo = { className: '', seatNumber: '', name: '' };
+    let quizCurrentIdx = 0;
+    let quizAnswers = [];
+    let quizTimerInterval = null;
+    let quizTimeSeconds = 0;
+    let quizResultsData = JSON.parse(localStorage.getItem('win_cmd_quiz_results') || '[]');
+    let teacherSortOrder = 'default';
+
+    // --- NAVIGATION ---
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow');
+        btn.classList.add('text-slate-300');
+      });
+
+      const activeTab = document.getElementById(`sec-${tabId}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) {
+        activeNav.classList.add('bg-blue-600', 'text-white', 'shadow');
+        activeNav.classList.remove('text-slate-300');
+      }
+
+      if (tabId === 'teacher') {
+        checkTeacherLoginState();
+      }
+
+      document.getElementById('mobile-menu').classList.add('hidden');
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+
+    function copyToClipboard(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      copyText(text);
+    }
+
+    function copyText(text) {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast('已複製至剪貼簿！');
+    }
+
+    // --- TAB 1: CHEAT SHEET LOGIC ---
+    let currentCategoryFilter = 'all';
+
+    function renderCheatSheet() {
+      const container = document.getElementById('command-grid');
+      const search = document.getElementById('search-input').value.toLowerCase();
+
+      const filtered = defaultCommands.filter(cmd => {
+        const matchCat = currentCategoryFilter === 'all' || cmd.category === currentCategoryFilter;
+        const matchSearch = cmd.name.toLowerCase().includes(search) || 
+                            cmd.title.toLowerCase().includes(search) || 
+                            cmd.description.toLowerCase().includes(search) ||
+                            cmd.example.toLowerCase().includes(search);
+        return matchCat && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-sm">未找到符合條件的指令。</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(cmd => `
+        <div class="bg-slate-800 rounded-xl border border-slate-700/80 p-5 hover:border-slate-600 transition-all shadow-md">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <div>
+              <span class="code-font text-xl font-bold text-blue-400">${cmd.name}</span>
+              <h3 class="text-xs font-semibold text-slate-200 mt-0.5">${cmd.title}</h3>
+            </div>
+            <span class="px-2 py-1 text-xs rounded bg-slate-700 text-slate-300 font-medium">${getCategoryLabel(cmd.category)}</span>
+          </div>
+          <p class="text-xs text-slate-400 mb-3 leading-relaxed">${cmd.description}</p>
+          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 mb-3 font-mono text-xs text-slate-300 flex items-center justify-between">
+            <code class="text-green-400">${cmd.example}</code>
+            <button onclick="copyText('${cmd.example}')" title="複製範例" class="text-slate-500 hover:text-white ml-2">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+          <div class="text-xs text-slate-400 border-t border-slate-700/50 pt-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-lightbulb text-yellow-500"></i>
+            <span>${cmd.notes}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getCategoryLabel(cat) {
+      switch(cat) {
+        case 'diagnostic': return '連線診斷';
+        case 'config': return '設定資訊';
+        case 'dns': return 'DNS解析';
+        case 'advanced': return '進階管理';
+        default: return '一般';
+      }
+    }
+
+    function filterCategory(cat) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-slate-700', 'text-slate-300');
+      });
+      event.target.classList.remove('bg-slate-700', 'text-slate-300');
+      event.target.classList.add('bg-blue-600', 'text-white');
+      renderCheatSheet();
+    }
+
+    function filterCommands() {
+      renderCheatSheet();
+    }
+
+    // --- TAB 2: DYNAMIC COMMAND BUILDER ---
+    function updateBuilderForm() {
+      const cmd = document.getElementById('builder-select').value;
+      const descBox = document.getElementById('builder-desc');
+      const controlsBox = document.getElementById('builder-controls');
+
+      if (cmd === 'ping') {
+        descBox.innerText = 'ping: 向目標發送 ICMP 封包，檢視傳輸延遲與連線狀況。';
+        controlsBox.innerHTML = `
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">目標網域或 IP</label>
+            <input type="text" id="p-target" value="google.com" oninput="buildPing()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="p-continuous" onchange="buildPing()" class="w-4 h-4 rounded text-blue-600">
+            <label for="p-continuous" class="text-xs text-slate-300">持續發送封包 (-t)</label>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">發送次數 (-n)</label>
+              <input type="number" id="p-count" placeholder="預設 4" oninput="buildPing()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">封包大小 (-l)</label>
+              <input type="number" id="p-size" placeholder="預設 32 Byte" oninput="buildPing()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+            </div>
+          </div>
+        `;
+        buildPing();
+      } else if (cmd === 'ipconfig') {
+        descBox.innerText = 'ipconfig: 檢視與維護本機 IP 網路介面設定。';
+        controlsBox.innerHTML = `
+          <div class="space-y-2">
+            <label class="block text-xs font-medium text-slate-300">附加參數選項</label>
+            <div class="space-y-1.5">
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="radio" name="ip-opt" value="" checked onchange="buildIpconfig()" class="text-blue-600"> 標準顯示
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="radio" name="ip-opt" value="/all" onchange="buildIpconfig()" class="text-blue-600"> 顯示詳細資訊 (/all)
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="radio" name="ip-opt" value="/flushdns" onchange="buildIpconfig()" class="text-blue-600"> 清除 DNS 快取 (/flushdns)
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="radio" name="ip-opt" value="/release" onchange="buildIpconfig()" class="text-blue-600"> 釋放 DHCP IP (/release)
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="radio" name="ip-opt" value="/renew" onchange="buildIpconfig()" class="text-blue-600"> 重新申請 DHCP IP (/renew)
+              </label>
+            </div>
+          </div>
+        `;
+        buildIpconfig();
+      } else if (cmd === 'tracert') {
+        descBox.innerText = 'tracert: 追蹤到達目標主機經過的所有網關節點。';
+        controlsBox.innerHTML = `
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">目標網域或 IP</label>
+            <input type="text" id="t-target" value="8.8.8.8" oninput="buildTracert()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="t-nodns" onchange="buildTracert()" class="w-4 h-4 rounded text-blue-600">
+            <label for="t-nodns" class="text-xs text-slate-300">不安裝解析域名，加快速度 (-d)</label>
+          </div>
+        `;
+        buildTracert();
+      } else if (cmd === 'nslookup') {
+        descBox.innerText = 'nslookup: 查詢與診斷 DNS 域名解析系統。';
+        controlsBox.innerHTML = `
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">目標網域</label>
+            <input type="text" id="ns-domain" value="www.edu.tw" oninput="buildNslookup()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">指定 DNS 伺服器 IP (選填)</label>
+            <input type="text" id="ns-server" placeholder="例: 168.95.1.1" oninput="buildNslookup()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+          </div>
+        `;
+        buildNslookup();
+      } else if (cmd === 'netstat') {
+        descBox.innerText = 'netstat: 監控 TCP/UDP 連線與連接埠狀態。';
+        controlsBox.innerHTML = `
+          <div class="space-y-2">
+            <label class="block text-xs font-medium text-slate-300">選擇組合參數</label>
+            <div class="space-y-1.5">
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="checkbox" id="ns-a" onchange="buildNetstat()" checked class="w-4 h-4 rounded text-blue-600"> 顯示所有連線與監聽 Port (-a)
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="checkbox" id="ns-n" onchange="buildNetstat()" checked class="w-4 h-4 rounded text-blue-600"> 以數字 IP 格式顯示 (-n)
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-300">
+                <input type="checkbox" id="ns-o" onchange="buildNetstat()" checked class="w-4 h-4 rounded text-blue-600"> 顯示程式 PID 識別碼 (-o)
+              </label>
+            </div>
+          </div>
+        `;
+        buildNetstat();
+      }
+    }
+
+    function setBuilderResult(str) {
+      document.getElementById('builder-result-text').innerText = str;
+    }
+
+    function buildPing() {
+      const target = document.getElementById('p-target').value.trim() || 'google.com';
+      const cont = document.getElementById('p-continuous').checked;
+      const count = document.getElementById('p-count').value;
+      const size = document.getElementById('p-size').value;
+      let res = `ping ${target}`;
+      if (cont) res += ' -t';
+      else if (count) res += ` -n ${count}`;
+      if (size) res += ` -l ${size}`;
+      setBuilderResult(res);
+    }
+
+    function buildIpconfig() {
+      const opt = document.querySelector('input[name="ip-opt"]:checked')?.value || '';
+      setBuilderResult(`ipconfig ${opt}`.trim());
+    }
+
+    function buildTracert() {
+      const target = document.getElementById('t-target').value.trim() || '8.8.8.8';
+      const nodns = document.getElementById('t-nodns').checked;
+      let res = `tracert`;
+      if (nodns) res += ' -d';
+      res += ` ${target}`;
+      setBuilderResult(res);
+    }
+
+    function buildNslookup() {
+      const domain = document.getElementById('ns-domain').value.trim() || 'www.edu.tw';
+      const server = document.getElementById('ns-server').value.trim();
+      let res = `nslookup ${domain}`;
+      if (server) res += ` ${server}`;
+      setBuilderResult(res);
+    }
+
+    function buildNetstat() {
+      const a = document.getElementById('ns-a').checked ? 'a' : '';
+      const n = document.getElementById('ns-n').checked ? 'n' : '';
+      const o = document.getElementById('ns-o').checked ? 'o' : '';
+      const flags = `${a}${n}${o}`;
+      setBuilderResult(flags ? `netstat -${flags}` : 'netstat');
+    }
+
+    // --- TAB 3: TROUBLESHOOTING WIZARD ---
+    const tsData = {
+      no_internet: {
+        title: "完全無法連線上網排錯步驟",
+        steps: [
+          {
+            step: "步驟 1: 檢查本機 IP 配置",
+            desc: "確認網路線/Wi-Fi 連接正常後，開啟 CMD 檢視是否取得有效 IP。",
+            cmd: "ipconfig",
+            check: "若顯示 169.254.x.x 代表並未向路由器取得有效 IP。"
+          },
+          {
+            step: "步驟 2: 測試區域網路閘道 (Gateway)",
+            desc: "試著 Ping 閘道器 (如路由器 192.168.1.1)。",
+            cmd: "ping 192.168.1.1",
+            check: "若無法回應，代表本機至路由器間區域網路中斷。"
+          },
+          {
+            step: "步驟 3: 重新指派 DHCP IP",
+            desc: "嘗試釋放並重新向伺服器申請 IP 位址。",
+            cmd: "ipconfig /release && ipconfig /renew",
+            check: "再次執行 ipconfig 查看是否順利更新 IP。"
+          }
+        ]
+      },
+      dns_issue: {
+        title: "DNS 域名解析障礙排除",
+        steps: [
+          {
+            step: "步驟 1: 測試公網 IP 暢通性",
+            desc: "測試是否可直接連通外網公共 IP (如 Google 8.8.8.8)。",
+            cmd: "ping 8.8.8.8",
+            check: "若能 Ping 通 8.8.8.8，表示實體連線無虞，問題在於 DNS。"
+          },
+          {
+            step: "步驟 2: 清除本機 DNS 快取紀錄",
+            desc: "清除可能殘留的舊 DNS 解析快取。",
+            cmd: "ipconfig /flushdns",
+            check: "出現「已成功清理 DNS 解析快取」即完成。"
+          },
+          {
+            step: "步驟 3: 測試指定公共 DNS 解析",
+            desc: "指定使用 中華電信 DNS (168.95.1.1) 查詢網址。",
+            cmd: "nslookup www.google.com 168.95.1.1",
+            check: "若能正確返回 IP，請調整本機網卡 DNS 設定。"
+          }
+        ]
+      },
+      slow_network: {
+        title: "連線卡頓與高延遲節點診斷",
+        steps: [
+          {
+            step: "步驟 1: 測試持續連線穩定度與掉包率",
+            desc: "對目標主機發送持續封包，觀察 latency 延遲變化。",
+            cmd: "ping -t www.google.com",
+            check: "按 Ctrl+C 結束，觀察有無掉包或延遲劇烈震盪。"
+          },
+          {
+            step: "步驟 2: 使用 Tracert 定位高延遲節點",
+            desc: "檢視傳送途中各網關路由器的回應時間。",
+            cmd: "tracert -d www.google.com",
+            check: "觀察哪一個 Hop 節點突然增加至數百 ms 以上。"
+          }
+        ]
+      }
+    };
+
+    function loadTroubleshootScenario(key) {
+      const box = document.getElementById('ts-wizard-box');
+      const content = document.getElementById('ts-content');
+      const data = tsData[key];
+
+      box.classList.remove('hidden');
+      content.innerHTML = `
+        <h3 class="text-sm font-bold text-purple-300 mb-4 pb-2 border-b border-slate-700">${data.title}</h3>
+        <div class="space-y-4">
+          ${data.steps.map(s => `
+            <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+              <h4 class="font-semibold text-blue-400 text-xs mb-1">${s.step}</h4>
+              <p class="text-xs text-slate-300 mb-2 leading-relaxed">${s.desc}</p>
+              <div class="bg-slate-900 p-2 rounded border border-slate-700 code-font text-xs text-green-400 flex items-center justify-between mb-2">
+                <span>> ${s.cmd}</span>
+                <button onclick="copyText('${s.cmd}')" class="text-slate-400 hover:text-white"><i class="fa-regular fa-copy"></i></button>
+              </div>
+              <p class="text-xs text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-green-500"></i> 觀察重點：${s.check}</p>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // --- TAB 4: STUDENT QUIZ SYSTEM ---
+    function startQuizProcess() {
+      const className = document.getElementById('student-class').value.trim();
+      const seatNumber = document.getElementById('student-seat').value.trim();
+      const name = document.getElementById('student-name').value.trim();
+
+      if (!className || !seatNumber || !name) {
+        alert('請確實填寫班級、座號與姓名！');
+        return;
+      }
+
+      quizStudentInfo = { className, seatNumber, name };
+
+      document.getElementById('quiz-header-student-info').innerText = 
+        `班級: ${className} | 座號: ${seatNumber}號 | 姓名: ${name}`;
+
+      quizCurrentIdx = 0;
+      quizAnswers = [];
+      quizTimeSeconds = 0;
+
+      document.getElementById('quiz-student-form-card').classList.add('hidden');
+      document.getElementById('quiz-active-card').classList.remove('hidden');
+      document.getElementById('quiz-result-card').classList.add('hidden');
+
+      if (quizTimerInterval) clearInterval(quizTimerInterval);
+      quizTimerInterval = setInterval(() => {
+        quizTimeSeconds++;
+        const mins = String(Math.floor(quizTimeSeconds / 60)).padStart(2, '0');
+        const secs = String(quizTimeSeconds % 60).padStart(2, '0');
+        document.getElementById('quiz-timer').innerText = `${mins}:${secs}`;
+      }, 1000);
+
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      const q = currentQuestions[quizCurrentIdx];
+      document.getElementById('quiz-progress-text').innerText = `${quizCurrentIdx + 1} / ${currentQuestions.length}`;
+      document.getElementById('quiz-q-category').innerText = q.category || '網路概念';
+      document.getElementById('quiz-q-text').innerText = `${quizCurrentIdx + 1}. ${q.text}`;
+
+      const optionsBox = document.getElementById('quiz-options-container');
+      optionsBox.innerHTML = q.options.map((opt, idx) => `
+        <button onclick="handleSelectAnswer(${idx})" class="w-full text-left p-3.5 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-blue-900/30 hover:border-blue-500 transition-all text-xs font-medium text-slate-200 flex items-center gap-3">
+          <span class="w-6 h-6 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-xs text-slate-300 font-bold shrink-0">${String.fromCharCode(65 + idx)}</span>
+          <span>${opt}</span>
+        </button>
+      `).join('');
+    }
+
+    function handleSelectAnswer(selectedIdx) {
+      quizAnswers.push(selectedIdx);
+
+      if (quizCurrentIdx + 1 < currentQuestions.length) {
+        quizCurrentIdx++;
+        renderQuizQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      clearInterval(quizTimerInterval);
+
+      let correctCount = 0;
+      currentQuestions.forEach((q, idx) => {
+        if (quizAnswers[idx] === q.correct) {
+          correctCount++;
+        }
+      });
+
+      const totalScore = Math.round((correctCount / currentQuestions.length) * 100);
+      const mins = String(Math.floor(quizTimeSeconds / 60)).padStart(2, '0');
+      const secs = String(quizTimeSeconds % 60).padStart(2, '0');
+      const formattedTime = `${mins}:${secs}`;
+      const nowStr = new Date().toLocaleString('zh-TW');
+
+      document.getElementById('result-student-info').innerText = 
+        `班級: ${quizStudentInfo.className} | 座號: ${quizStudentInfo.seatNumber} | 姓名: ${quizStudentInfo.name}`;
+      document.getElementById('result-score').innerText = totalScore;
+      document.getElementById('result-correct').innerText = correctCount;
+      document.getElementById('result-time').innerText = formattedTime;
+
+      const record = {
+        id: Date.now(),
+        className: quizStudentInfo.className,
+        seatNumber: quizStudentInfo.seatNumber,
+        name: quizStudentInfo.name,
+        score: totalScore,
+        correctCount: correctCount,
+        totalQuestions: currentQuestions.length,
+        timeUsed: formattedTime,
+        timestamp: nowStr
+      };
+
+      quizResultsData.push(record);
+      localStorage.setItem('win_cmd_quiz_results', JSON.stringify(quizResultsData));
+
+      const breakdownBox = document.getElementById('result-breakdown');
+      breakdownBox.innerHTML = currentQuestions.map((q, idx) => {
+        const userAns = quizAnswers[idx];
+        const isCorrect = userAns === q.correct;
+        return `
+          <div class="p-3 rounded-lg border ${isCorrect ? 'bg-green-950/20 border-green-800/40' : 'bg-red-950/20 border-red-800/40'} text-xs space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold ${isCorrect ? 'text-green-400' : 'text-red-400'}">
+                <i class="fa-solid ${isCorrect ? 'fa-circle-check' : 'fa-circle-xmark'} mr-1"></i> 題目 ${idx + 1}
+              </span>
+              <span class="text-slate-400">${q.category}</span>
+            </div>
+            <p class="text-slate-300 font-medium">${q.text}</p>
+            <div class="text-slate-400 mt-1">
+              <span>您的回答: <span class="${isCorrect ? 'text-green-400' : 'text-red-400'} font-semibold">${q.options[userAns]}</span></span> | 
+              <span>正確答案: <span class="text-green-400 font-semibold">${q.options[q.correct]}</span></span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('quiz-active-card').classList.add('hidden');
+      document.getElementById('quiz-result-card').classList.remove('hidden');
+
+      if (sessionStorage.getItem('teacher_logged_in') === 'true') {
+        renderTeacherResults();
+      }
+    }
+
+    function resetToStudentForm() {
+      document.getElementById('quiz-result-card').classList.add('hidden');
+      document.getElementById('quiz-active-card').classList.add('hidden');
+      document.getElementById('quiz-student-form-card').classList.remove('hidden');
+    }
+
+    // --- TAB 5: TEACHER PORTAL & AUTH ---
+    function checkTeacherLoginState() {
+      const isLoggedIn = sessionStorage.getItem('teacher_logged_in') === 'true';
+      if (isLoggedIn) {
+        document.getElementById('teacher-login-card').classList.add('hidden');
+        document.getElementById('teacher-panel').classList.remove('hidden');
+        renderTeacherResults();
+        renderTeacherQuestionsList();
+      } else {
+        document.getElementById('teacher-login-card').classList.remove('hidden');
+        document.getElementById('teacher-panel').classList.add('hidden');
+      }
+    }
+
+    function verifyTeacherPassword() {
+      const pwdInput = document.getElementById('teacher-pwd-input');
+      const pwd = pwdInput.value;
+      const errorMsg = document.getElementById('teacher-login-error');
+
+      if (pwd === 'teacher123') {
+        errorMsg.classList.add('hidden');
+        pwdInput.value = '';
+        sessionStorage.setItem('teacher_logged_in', 'true');
+        checkTeacherLoginState();
+        showToast('管理員登入成功！');
+      } else {
+        errorMsg.classList.remove('hidden');
+      }
+    }
+
+    function teacherLogout() {
+      sessionStorage.removeItem('teacher_logged_in');
+      document.getElementById('teacher-pwd-input').value = '';
+      checkTeacherLoginState();
+      showToast('已登出管理員後台');
+    }
+
+    function renderTeacherResults() {
+      const tbody = document.getElementById('teacher-results-tbody');
+      const searchKeyword = (document.getElementById('teacher-search-input')?.value || '').toLowerCase().trim();
+      
+      let filtered = quizResultsData.filter(r => {
+        return r.name.toLowerCase().includes(searchKeyword) ||
+               r.className.toLowerCase().includes(searchKeyword) ||
+               r.seatNumber.toString().includes(searchKeyword);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-8 text-slate-500">尚無符合條件的學生測驗紀錄。</td>
+          </tr>
+        `;
+        return;
+      }
+
+      if (teacherSortOrder === 'class_seat') {
+        filtered.sort((a, b) => {
+          const cComp = a.className.localeCompare(b.className, 'zh-Hant');
+          if (cComp !== 0) return cComp;
+          return parseInt(a.seatNumber) - parseInt(b.seatNumber);
+        });
+      } else if (teacherSortOrder === 'score') {
+        filtered.sort((a, b) => b.score - a.score);
+      }
+
+      tbody.innerHTML = filtered.map(r => `
+        <tr class="hover:bg-slate-700/40 transition-colors">
+          <td class="px-4 py-3 font-medium text-slate-200">${r.className}</td>
+          <td class="px-4 py-3">${r.seatNumber}</td>
+          <td class="px-4 py-3 text-slate-100 font-semibold">${r.name}</td>
+          <td class="px-4 py-3 font-bold ${r.score >= 80 ? 'text-green-400' : r.score >= 60 ? 'text-yellow-400' : 'text-red-400'}">${r.score}分</td>
+          <td class="px-4 py-3 text-slate-300">${r.correctCount} / ${r.totalQuestions}</td>
+          <td class="px-4 py-3 code-font text-xs text-slate-400">${r.timeUsed}</td>
+          <td class="px-4 py-3 text-xs text-slate-400">${r.timestamp}</td>
+        </tr>
+      `).join('');
+    }
+
+    function sortTeacherResults(type) {
+      teacherSortOrder = type;
+      renderTeacherResults();
+    }
+
+    function exportResultsCSV() {
+      if (quizResultsData.length === 0) {
+        alert('目前無成績資料可供匯出！');
+        return;
+      }
+
+      let csvContent = "\uFEFF";
+      csvContent += "班級,座號,姓名,得分,正確題數,費時,測驗時間\n";
+
+      quizResultsData.forEach(r => {
+        const row = [
+          `"${r.className}"`,
+          `"${r.seatNumber}"`,
+          `"${r.name}"`,
+          r.score,
+          r.correctCount,
+          `"${r.timeUsed}"`,
+          `"${r.timestamp}"`
+        ];
+        csvContent += row.join(",") + "\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Windows網路指令測驗成績單_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('已下載成績 CSV 檔案！');
+    }
+
+    function clearAllResults() {
+      if (confirm('確定要清空所有學生的測驗紀錄嗎？')) {
+        quizResultsData = [];
+        localStorage.removeItem('win_cmd_quiz_results');
+        renderTeacherResults();
+        showToast('已清空學生測驗紀錄');
+      }
+    }
+
+    // --- QUESTION BANK CRUD ---
+    function renderTeacherQuestionsList() {
+      document.getElementById('question-count-tag').innerText = currentQuestions.length;
+      const container = document.getElementById('teacher-questions-list');
+      
+      container.innerHTML = currentQuestions.map((q, idx) => `
+        <div class="bg-slate-900 p-3 rounded-lg border border-slate-700/80 text-xs space-y-2">
+          <div class="flex items-center justify-between text-slate-400">
+            <span class="font-bold text-blue-400">#${idx + 1} [${q.category}]</span>
+            <div class="flex items-center gap-2">
+              <span class="text-green-400 font-semibold">正確: ${String.fromCharCode(65 + q.correct)}</span>
+              <button onclick="deleteQuestion(${q.id})" class="text-red-400 hover:text-red-300 ml-2" title="刪除題目">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <p class="text-slate-200 font-medium">${q.text}</p>
+          <div class="grid grid-cols-2 gap-1.5 text-slate-400 pt-1">
+            ${q.options.map((o, oIdx) => `
+              <div class="${oIdx === q.correct ? 'text-green-400 font-semibold' : ''}">
+                ${String.fromCharCode(65 + oIdx)}. ${o}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openAddQuestionModal() {
+      document.getElementById('add-q-modal').classList.remove('hidden');
+    }
+
+    function closeAddQuestionModal() {
+      document.getElementById('add-q-modal').classList.add('hidden');
+    }
+
+    function saveNewQuestion() {
+      const cat = document.getElementById('new-q-cat').value.trim();
+      const text = document.getElementById('new-q-text').value.trim();
+      const opt0 = document.getElementById('new-q-opt0').value.trim();
+      const opt1 = document.getElementById('new-q-opt1').value.trim();
+      const opt2 = document.getElementById('new-q-opt2').value.trim();
+      const opt3 = document.getElementById('new-q-opt3').value.trim();
+      const correct = parseInt(document.getElementById('new-q-correct').value);
+
+      const newQ = {
+        id: Date.now(),
+        category: cat,
+        text: text,
+        options: [opt0, opt1, opt2, opt3],
+        correct: correct
+      };
+
+      currentQuestions.push(newQ);
+      localStorage.setItem('win_cmd_questions', JSON.stringify(currentQuestions));
+
+      renderTeacherQuestionsList();
+      closeAddQuestionModal();
+      showToast('已新增題目！');
+    }
+
+    function deleteQuestion(qId) {
+      if (confirm('確定要刪除此題目嗎？')) {
+        currentQuestions = currentQuestions.filter(q => q.id !== qId);
+        localStorage.setItem('win_cmd_questions', JSON.stringify(currentQuestions));
+        renderTeacherQuestionsList();
+        showToast('題目已刪除');
+      }
+    }
+
+    function resetQuestionsToDefault() {
+      if (confirm('確定重置題庫為預設的 20 題嗎？將清除自行新增的題目！')) {
+        currentQuestions = JSON.parse(JSON.stringify(defaultQuestions));
+        localStorage.setItem('win_cmd_questions', JSON.stringify(currentQuestions));
+        renderTeacherQuestionsList();
+        showToast('已重置為預設題庫');
+      }
+    }
+
+    // --- ON INITIAL LOAD ---
+    window.onload = function() {
+      renderCheatSheet();
+      updateBuilderForm();
+    };
+  </script>
+</body>
+</html>
