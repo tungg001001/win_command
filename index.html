@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 網路常用命令大全 - 互動學習與測驗系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfeff',
+                            100: '#cffaff',
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            900: '#164e63',
+                        },
+                        darkBg: '#0f172a',
+                        cardBg: '#1e293b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 25px -2px rgba(6, 182, 212, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-brand-600 to-cyan-400 p-2.5 rounded-xl shadow-lg shadow-brand-500/20 text-white">
+                    <i class="fa-solid fa-terminal text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-brand-400">
+                        Windows 網路常用命令大全
+                    </h1>
+                    <p class="text-xs text-slate-400">CMD / PowerShell 網路維運、診斷與測驗評量的教學平台</p>
+                </div>
+            </div>
+
+            <!-- Global Navigation Tabs -->
+            <div class="flex flex-wrap items-center gap-2">
+                <button id="nav-commands-btn" onclick="switchMainTab('commands')" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-brand-600 text-white shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>命令對照表</span>
+                </button>
+                <button id="nav-troubleshoot-btn" onclick="switchMainTab('troubleshoot')" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-stethoscope"></i>
+                    <span>網路故障引導診斷</span>
+                </button>
+                <button id="nav-quiz-btn" onclick="switchMainTab('quiz')" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>學生測驗區</span>
+                </button>
+                <button id="nav-teacher-btn" onclick="switchMainTab('teacher')" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-slate-800 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>教師管理專區</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <div id="main-commands-section" class="space-y-6">
+
+            <!-- Search and Filter Bar -->
+            <div class="bg-cardBg rounded-2xl p-4 sm:p-5 border border-slate-800 shadow-xl space-y-4">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full md:w-96">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="search-input" oninput="filterCommands()" placeholder="搜尋指令 (例: ping, ipconfig, port, dns)..." 
+                            class="w-full pl-10 pr-10 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-slate-100 placeholder-slate-500 transition-all">
+                        <button id="clear-search" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center justify-between w-full md:w-auto gap-4">
+                        <span id="command-count" class="text-xs text-slate-400 font-medium">顯示 0 個指令</span>
+                        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+                            <button id="view-grid-btn" onclick="setViewMode('grid')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-brand-400 shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-border-all"></i> 卡片視圖
+                            </button>
+                            <button id="view-table-btn" onclick="setViewMode('table')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
+                                <i class="fa-solid fa-table-list"></i> 表格視圖
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80" id="category-filters"></div>
+            </div>
+
+            <div id="commands-container-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+            <div id="commands-container-table" class="hidden overflow-hidden bg-cardBg border border-slate-800 rounded-2xl shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-900/90 text-xs text-slate-400 uppercase border-b border-slate-800 font-semibold">
+                            <tr>
+                                <th class="px-5 py-3.5">指令名稱</th>
+                                <th class="px-5 py-3.5">分類</th>
+                                <th class="px-5 py-3.5">主要功能說明</th>
+                                <th class="px-5 py-3.5">成功判斷關鍵</th>
+                                <th class="px-5 py-3.5 text-right">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-800"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="no-results" class="hidden text-center py-12 bg-cardBg border border-slate-800 rounded-2xl">
+                <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-3"></i>
+                <p class="text-slate-400 font-medium">找不到符合條件的網路指令</p>
+                <button onclick="clearSearch()" class="mt-3 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-brand-400 text-xs rounded-lg transition-colors">
+                    重置搜尋與篩選
+                </button>
+            </div>
+        </div>
+
+        <div id="main-troubleshoot-section" class="hidden space-y-6">
+            <div class="bg-cardBg rounded-2xl p-6 border border-slate-800 shadow-xl max-w-4xl mx-auto">
+                <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-800">
+                    <div class="p-3 bg-brand-500/10 text-brand-400 rounded-xl">
+                        <i class="fa-solid fa-network-wired text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Windows 網路故障一步步診斷精靈</h2>
+                        <p class="text-xs text-slate-400">當電腦無法連上網路時，依照標準排查流程一步步檢測問題根源</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-5 gap-2 mb-8">
+                    <div id="wiz-step-1-indicator" class="h-2 rounded-full bg-brand-500 transition-all duration-300"></div>
+                    <div id="wiz-step-2-indicator" class="h-2 rounded-full bg-slate-800 transition-all duration-300"></div>
+                    <div id="wiz-step-3-indicator" class="h-2 rounded-full bg-slate-800 transition-all duration-300"></div>
+                    <div id="wiz-step-4-indicator" class="h-2 rounded-full bg-slate-800 transition-all duration-300"></div>
+                    <div id="wiz-step-5-indicator" class="h-2 rounded-full bg-slate-800 transition-all duration-300"></div>
+                </div>
+
+                <div id="wizard-content" class="bg-slate-900 rounded-xl p-6 border border-slate-800"></div>
+
+                <div class="mt-6 flex justify-between items-center text-xs text-slate-500">
+                    <span>提示：請依序在 CMD 命令提示字元執行建議之指令</span>
+                    <button onclick="resetWizard()" class="text-brand-400 hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-rotate"></i> 重新開始排查
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-quiz-section" class="hidden space-y-6">
+            <div class="bg-cardBg rounded-2xl p-6 border border-slate-800 shadow-xl max-w-3xl mx-auto">
+                
+                <!-- Quiz Registration Screen -->
+                <div id="quiz-start-screen" class="space-y-6">
+                    <div class="text-center space-y-2 border-b border-slate-800 pb-5">
+                        <div class="inline-flex p-3 bg-brand-500/10 text-brand-400 rounded-2xl mb-2">
+                            <i class="fa-solid fa-graduation-cap text-3xl"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">Windows 網路指令觀念隨堂測驗</h2>
+                        <p class="text-xs text-slate-400">隨機抽題，綜合測試您對 CMD/PowerShell 網路除錯指令的了解程度</p>
+                    </div>
+
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">學生姓名 / 學號</label>
+                            <input type="text" id="student-name-input" placeholder="請輸入姓名與學號 (例如: 張小明 A12345)"
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                        </div>
+                        <div class="text-xs text-slate-400 space-y-1">
+                            <p class="flex items-center gap-2"><i class="fa-solid fa-circle-info text-brand-400"></i> 測驗規則：系統將自動計算時間與得分。</p>
+                            <p class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-400"></i> 測驗結束後可查看詳細題目解析並儲存成績紀錄。</p>
+                        </div>
+                    </div>
+
+                    <button onclick="startQuiz()" class="w-full py-3 bg-gradient-to-r from-brand-600 to-cyan-500 hover:from-brand-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg transition-all text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> 開始進行測驗
+                    </button>
+                </div>
+
+                <!-- Active Quiz Screen -->
+                <div id="quiz-active-screen" class="hidden space-y-6">
+                    <!-- Quiz Header Info -->
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <span id="quiz-student-display" class="text-xs font-bold text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-md border border-brand-500/20">學員</span>
+                            <span id="quiz-progress-text" class="text-xs text-slate-400 ml-3">第 1 / 5 題</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-mono text-amber-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+                            <i class="fa-solid fa-clock"></i>
+                            <span id="quiz-timer">00:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Question Content -->
+                    <div class="space-y-4">
+                        <h3 id="quiz-question-title" class="text-base font-bold text-slate-100 leading-snug">--</h3>
+                        <div id="quiz-options-container" class="space-y-2.5">--</div>
+                    </div>
+
+                    <!-- Question Controls -->
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                        <button id="quiz-prev-btn" onclick="prevQuizQuestion()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl font-medium transition-colors hidden">
+                            上一題
+                        </button>
+                        <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs rounded-xl font-bold transition-all ml-auto">
+                            下一題 <i class="fa-solid fa-chevron-right ml-1"></i>
+                        </button>
+                        <button id="quiz-submit-btn" onclick="submitQuiz()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-xl font-bold transition-all ml-auto hidden">
+                            交卷送出 <i class="fa-solid fa-paper-plane ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Results Breakdown Screen -->
+                <div id="quiz-result-screen" class="hidden space-y-6">
+                    <div class="text-center py-4 bg-slate-900 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="text-4xl font-extrabold text-brand-400 font-mono" id="result-score">0 分</div>
+                        <p class="text-sm font-semibold text-slate-200" id="result-student-name">--</p>
+                        <p class="text-xs text-slate-400" id="result-time-taken">總花費時間：00:00</p>
+                    </div>
+
+                    <!-- Question Analysis List -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold text-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-brand-400"></i> 測驗解答與詳細檢討
+                        </h4>
+                        <div id="result-analysis-container" class="space-y-4 max-h-96 overflow-y-auto pr-2"></div>
+                    </div>
+
+                    <button onclick="resetQuizScreen()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-brand-400 text-xs font-semibold rounded-xl transition-colors">
+                        重新參加測驗
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="main-teacher-section" class="hidden space-y-6">
+
+            <!-- Teacher Lock / Login Modal -->
+            <div id="teacher-auth-card" class="bg-cardBg rounded-2xl p-6 border border-slate-800 shadow-xl max-w-md mx-auto space-y-5">
+                <div class="text-center space-y-2">
+                    <div class="inline-flex p-3 bg-amber-500/10 text-amber-400 rounded-2xl mb-1">
+                        <i class="fa-solid fa-lock text-2xl"></i>
+                    </div>
+                    <h2 class="text-lg font-bold text-white">教師專區身份驗證</h2>
+                    <p class="text-xs text-slate-400">請輸入教師登入密碼以存取學生成績與題庫管理</p>
+                </div>
+
+                <div class="space-y-3">
+                    <input type="password" id="teacher-password-input" placeholder="請輸入教師密碼"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <p id="teacher-auth-error" class="text-xs text-rose-400 hidden flex items-center gap-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 密碼不正確，請重新輸入。
+                    </p>
+                </div>
+
+                <button onclick="verifyTeacherPassword()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition-all">
+                    登入教師後台
+                </button>
+            </div>
+
+            <!-- Teacher Dashboard Content -->
+            <div id="teacher-dashboard-content" class="hidden space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 bg-cardBg p-4 rounded-2xl border border-slate-800 shadow-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl">
+                            <i class="fa-solid fa-user-gear text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-white">教師管理控制台</h2>
+                            <p class="text-xs text-slate-400">查看學生成績紀錄與自訂測驗題庫</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="exportResultsCSV()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-csv"></i> 匯出成績 CSV
+                        </button>
+                        <button onclick="clearStudentResults()" class="px-3.5 py-1.5 bg-rose-600/20 text-rose-300 hover:bg-rose-600 hover:text-white border border-rose-500/30 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-trash"></i> 清除成績紀錄
+                        </button>
+                        <button onclick="lockTeacherPortal()" class="px-3.5 py-1.5 bg-slate-800 text-slate-300 hover:text-white rounded-lg text-xs font-medium transition-all">
+                            <i class="fa-solid fa-right-from-bracket"></i> 登出
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Tabs -->
+                <div class="flex border-b border-slate-800 gap-4">
+                    <button id="teacher-tab-results-btn" onclick="switchTeacherTab('results')" class="pb-2.5 text-sm font-bold text-amber-400 border-b-2 border-amber-400 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-square-poll-vertical"></i> 學生測驗成績單 (<span id="results-count-badge">0</span>)
+                    </button>
+                    <button id="teacher-tab-questions-btn" onclick="switchTeacherTab('questions')" class="pb-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square"></i> 題庫管理 (<span id="questions-count-badge">0</span>)
+                    </button>
+                </div>
+
+                <!-- Teacher Tab 1: Student Results Table -->
+                <div id="teacher-view-results" class="bg-cardBg rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="bg-slate-900/90 text-xs text-slate-400 uppercase border-b border-slate-800 font-semibold">
+                                <tr>
+                                    <th class="px-5 py-3.5">測驗時間</th>
+                                    <th class="px-5 py-3.5">學生姓名 / 學號</th>
+                                    <th class="px-5 py-3.5">得分</th>
+                                    <th class="px-5 py-3.5">花費時間</th>
+                                    <th class="px-5 py-3.5">答對率</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-results-tbody" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                    <div id="no-student-results" class="hidden text-center py-10 text-slate-500 text-xs">
+                        目前尚無學生交卷紀錄
+                    </div>
+                </div>
+
+                <!-- Teacher Tab 2: Question Bank Manager -->
+                <div id="teacher-view-questions" class="hidden space-y-6">
+                    <!-- Add Question Button & Modal Opener -->
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-slate-200">自訂題目清單</h3>
+                        <button onclick="openQuestionModal()" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> 新增測驗題目
+                        </button>
+                    </div>
+
+                    <div id="questions-bank-list" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal for Adding/Editing Questions -->
+    <div id="question-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 id="modal-title" class="text-base font-bold text-white">新增題目</h3>
+                <button onclick="closeQuestionModal()" class="text-slate-500 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">題目描述</label>
+                    <textarea id="modal-q-title" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1">選項 A</label>
+                        <input type="text" id="modal-opt-0" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1">選項 B</label>
+                        <input type="text" id="modal-opt-1" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1">選項 C</label>
+                        <input type="text" id="modal-opt-2" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1">選項 D</label>
+                        <input type="text" id="modal-opt-3" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 font-semibold mb-1">正確答案</label>
+                        <select id="modal-correct-idx" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white">
+                            <option value="0">選項 A</option>
+                            <option value="1">選項 B</option>
+                            <option value="2">選項 C</option>
+                            <option value="3">選項 D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">詳細解答說明</label>
+                    <textarea id="modal-explanation" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                <button onclick="closeQuestionModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl font-medium">取消</button>
+                <button onclick="saveQuestionFromModal()" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs rounded-xl font-bold">儲存題目</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // Core Commands Dataset
+        const commandsData = [
+            {
+                id: 'ping',
+                name: 'ping',
+                category: '連通性測試',
+                desc: '測試與目標主機的連通性與回應延遲時間。',
+                hasParams: true,
+                paramType: 'host',
+                defaultParam: '8.8.8.8',
+                buildCmd: (val) => `ping ${val || '8.8.8.8'}`,
+                successKey: '顯示 "回覆自..." 且有時間回應 (ms)',
+                tip: '預設發送 4 個封包。若要持續 ping 可以加上 -t 參數 (如 ping 8.8.8.8 -t)。使用 Ctrl+C 可停止。'
+            },
+            {
+                id: 'tracert',
+                name: 'tracert',
+                category: '連通性測試',
+                desc: '追蹤封包到達目標主機所經過的所有路由器節點 (Hop)。',
+                hasParams: true,
+                paramType: 'host',
+                defaultParam: 'google.com',
+                buildCmd: (val) => `tracert ${val || 'google.com'}`,
+                successKey: '成功列出沿途 Hop IP，最後一行到達目標主機',
+                tip: '若某些節點顯示 "*" 或 "要求逾時"，通常代表該路由器關閉了 ICMP 回應，不一定代表網路中斷。'
+            },
+            {
+                id: 'pathping',
+                name: 'pathping',
+                category: '連通性測試',
+                desc: '結合 ping 與 tracert，可精準統計路徑上每個節點的封包遺失率。',
+                hasParams: true,
+                paramType: 'host',
+                defaultParam: 'google.com',
+                buildCmd: (val) => `pathping ${val || 'google.com'}`,
+                successKey: '計算完成後顯示各節點 0% 遺失率',
+                tip: '執行時間較長（約需 2-5 分鐘），會進行數百次測試以產出統計數據。'
+            },
+            {
+                id: 'ipconfig',
+                name: 'ipconfig',
+                category: 'IP 配置管理',
+                desc: '快速檢視目前所有網路卡的 IPv4/IPv6 位址與預設閘道。',
+                hasParams: false,
+                buildCmd: () => 'ipconfig',
+                successKey: '顯示有效的 IPv4 位址與預設閘道 (Gateway)',
+                tip: '若 IP 為 169.254.x.x 代表無法從 DHCP 伺服器成功取得 IP 位址（APIPA 自動指派）。'
+            },
+            {
+                id: 'ipconfig-all',
+                name: 'ipconfig /all',
+                category: 'IP 配置管理',
+                desc: '顯示極詳細的網路設定，包含網卡 MAC 位址、DNS 伺服器與 DHCP 狀態。',
+                hasParams: false,
+                buildCmd: () => 'ipconfig /all',
+                successKey: '完整顯示實體位址 (MAC) 與 DNS 伺服器清單',
+                tip: '排查 DNS 設定或需要提供電腦 MAC 位址給網管人員時必用。'
+            },
+            {
+                id: 'ipconfig-flushdns',
+                name: 'ipconfig /flushdns',
+                category: 'IP 配置管理',
+                desc: '清除本機 DNS 解析快取，解決網站換 IP 或改版後連不上問題。',
+                hasParams: false,
+                buildCmd: () => 'ipconfig /flushdns',
+                successKey: '顯示 "已成功清除 DNS 解析度快取"',
+                tip: '當網頁出現 DNS_PROBE_FINISHED_NXDOMAIN 錯誤時，通常此命令可解決。'
+            },
+            {
+                id: 'ipconfig-release',
+                name: 'ipconfig /release',
+                category: 'IP 配置管理',
+                desc: '釋放目前向 DHCP 伺服器取得的 IP 位址。',
+                hasParams: false,
+                buildCmd: () => 'ipconfig /release',
+                successKey: 'IPv4 位址變更為 0.0.0.0',
+                tip: '通常與 /renew 搭配使用，用來重設 DHCP 派發的 IP。'
+            },
+            {
+                id: 'ipconfig-renew',
+                name: 'ipconfig /renew',
+                category: 'IP 配置管理',
+                desc: '重新向 DHCP 伺服器申請取得新的 IP 位址。',
+                hasParams: false,
+                buildCmd: () => 'ipconfig /renew',
+                successKey: '重新取得有效的 IPv4 位址與預設閘道',
+                tip: '若長時間無回應，代表 DHCP 伺服器可能故障或網路實體線路未連通。'
+            },
+            {
+                id: 'nslookup',
+                name: 'nslookup',
+                category: 'DNS 查詢',
+                desc: '查詢特定網域名稱 (Domain) 所對應的 IP 位址。',
+                hasParams: true,
+                paramType: 'domain',
+                defaultParam: 'google.com',
+                buildCmd: (val) => `nslookup ${val || 'google.com'}`,
+                successKey: '輸出對應的位址 (Address: xxx.xxx.xxx.xxx)',
+                tip: '可以用來測試預設 DNS 是否能正常解譯網域。'
+            },
+            {
+                id: 'nslookup-custom',
+                name: 'nslookup [網域] [DNS IP]',
+                category: 'DNS 查詢',
+                desc: '使用指定（自訂）的 DNS 伺服器測試網域解析能力。',
+                hasParams: true,
+                paramType: 'domain-dns',
+                defaultParamDomain: 'google.com',
+                defaultParamDns: '8.8.8.8',
+                buildCmd: (domain, dns) => `nslookup ${domain || 'google.com'} ${dns || '8.8.8.8'}`,
+                successKey: '經由指定的 DNS 伺服器成功回覆 IP 紀錄',
+                tip: '可用來比較中華電信 (168.95.1.1) 與 Google (8.8.8.8) 或 Cloudflare (1.1.1.1) 的解析結果。'
+            },
+            {
+                id: 'netstat-ano',
+                name: 'netstat -ano',
+                category: '連線與 Port 監控',
+                desc: '列出電腦目前所有的 TCP/UDP 網路連線、監聽 Port 與對應的 PID。',
+                hasParams: false,
+                buildCmd: () => 'netstat -ano',
+                successKey: '顯示包含 LISTENING / ESTABLISHED 狀態及 PID 欄位',
+                tip: '最後一欄數字為 PID (程序 ID)，可至工作管理員尋找對應的程式。'
+            },
+            {
+                id: 'netstat-findstr',
+                name: 'netstat -ano | findstr :[Port]',
+                category: '連線與 Port 監控',
+                desc: '快速過濾並查詢特定的 Port (如 80, 443, 3389) 被哪個程序 PID 佔用。',
+                hasParams: true,
+                paramType: 'port',
+                defaultParam: '80',
+                buildCmd: (val) => `netstat -ano | findstr :${val || '80'}`,
+                successKey: '只篩選出使用該埠號的連線紀錄與對應 PID',
+                tip: '開發 Web 服務遇到 Port occupied 時最常用的排查指令。'
+            },
+            {
+                id: 'curl-i',
+                name: 'curl -I',
+                category: '連線與 Port 監控',
+                desc: '測試 HTTP/HTTPS Web 服務狀態並僅取得 Header 資訊 (Win 10/11 內建)。',
+                hasParams: true,
+                paramType: 'url',
+                defaultParam: 'https://www.google.com',
+                buildCmd: (val) => `curl -I ${val || 'https://www.google.com'}`,
+                successKey: '回應第一行顯示 HTTP/1.1 200 OK 或 HTTP/2 200',
+                tip: '不用打開瀏覽器即可驗證 Web 伺服器是否正常回應與確認 HTTP 狀態碼。'
+            },
+            {
+                id: 'test-netconnection',
+                name: 'Test-NetConnection',
+                category: '連線與 Port 監控',
+                desc: 'PowerShell 專用指令，精準測試特定 IP/網域的特定 Port 是否暢通。',
+                hasParams: true,
+                paramType: 'host-port',
+                defaultParamHost: 'google.com',
+                defaultParamPort: '443',
+                buildCmd: (host, port) => `Test-NetConnection ${host || 'google.com'} -Port ${port || '443'}`,
+                successKey: '輸出末端的 TcpTestSucceeded : True',
+                tip: 'Windows 現代版可以用它完全取代舊版的 Telnet 來做 Port 通暢性測試。'
+            },
+            {
+                id: 'arp-a',
+                name: 'arp -a',
+                category: '區域網路',
+                desc: '顯示本機快取中的區域網路 (LAN) IP 與實體 MAC 位址對照表。',
+                hasParams: false,
+                buildCmd: () => 'arp -a',
+                successKey: '列出同區域網路內其他裝置的 IP 與 MAC 位址',
+                tip: '用來查找同個 Wi-Fi 或路由器下的印表機、NAS 或其他設備 IP。'
+            },
+            {
+                id: 'netsh-winsock',
+                name: 'netsh winsock reset',
+                category: '重置網路 (管理員)',
+                desc: '重置 Windows 套接字 (Winsock) 目錄，修復網路協定堆疊損壞。',
+                hasParams: false,
+                buildCmd: () => 'netsh winsock reset',
+                successKey: '提示 "成功地重設 Winsock 目錄。您必須重新啟動電腦..."',
+                tip: '需要以「系統管理員身分」執行。常用於感染病毒或安裝軟體後無法上網之修復。'
+            },
+            {
+                id: 'netsh-ip-reset',
+                name: 'netsh int ip reset',
+                category: '重置網路 (管理員)',
+                desc: '將 TCP/IP 協定設定徹底重置為系統初始出廠狀態。',
+                hasParams: false,
+                buildCmd: () => 'netsh int ip reset',
+                successKey: '畫面上多行顯示 "重設 成功!"',
+                tip: '需要以「系統管理員身分」執行，執行完畢後建議重新啟動電腦。'
+            }
+        ];
+
+        // Default Question Bank
+        const defaultQuestions = [
+            {
+                id: 'q1',
+                title: '當電腦出現 DNS_PROBE_FINISHED_NXDOMAIN 網頁無法連線時，最適合先執行哪一個指令清除快取？',
+                options: ['ipconfig /release', 'ipconfig /flushdns', 'netstat -ano', 'ping 127.0.0.1'],
+                answer: 1,
+                explanation: 'ipconfig /flushdns 用於清除本機的 DNS 解析快取，能夠及時解決網域變更或舊 DNS 快取造成的連線失敗。'
+            },
+            {
+                id: 'q2',
+                title: '若需要查看網卡的實體 MAC 位址與指定 DNS 伺服器 IP，應輸入哪一個完整指令？',
+                options: ['ipconfig', 'ipconfig /all', 'arp -a', 'nslookup'],
+                answer: 1,
+                explanation: 'ipconfig /all 會輸出詳細的網路設定，包括硬體實體位址 (MAC)、DNS 伺服器與 DHCP 啟用狀態。'
+            },
+            {
+                id: 'q3',
+                title: '在 Windows 中，追蹤封包到達目標主機所經過的所有路由器節點 (Hop) 的命令是？',
+                options: ['traceroute', 'tracert', 'pathping', 'ping -t'],
+                answer: 1,
+                explanation: 'Windows 使用 tracert；而 Linux/macOS 系統則使用 traceroute。'
+            },
+            {
+                id: 'q4',
+                title: '若要檢查開發中的 Web 服務 8080 連接埠 (Port) 被哪一個程序 (PID) 佔用，正確的命令組合是？',
+                options: ['netstat -ano | findstr :8080', 'ipconfig /all | find :8080', 'ping 127.0.0.1:8080', 'arp -a 8080'],
+                answer: 0,
+                explanation: 'netstat -ano 可以列出所有 Port 及 PID，配合 findstr :8080 能快速過濾出目標 Port。'
+            },
+            {
+                id: 'q5',
+                title: 'PowerShell 中專用來精準測試特定目標主機之 Port 埠號是否開放暢通的指令是？',
+                options: ['Test-Connection', 'Test-NetConnection', 'ping', 'curl -I'],
+                answer: 1,
+                explanation: 'Test-NetConnection (如 Test-NetConnection google.com -Port 443) 是 PowerShell 測試 TCP Port 通暢度的利器。'
+            }
+        ];
+
+        const categories = ['全部', '連通性測試', 'IP 配置管理', 'DNS 查詢', '連線與 Port 監控', '區域網路', '重置網路 (管理員)'];
+        let currentCategory = '全部';
+        let searchQuery = '';
+        let viewMode = 'grid';
+        let paramState = {};
+
+        // Question Bank & Results Local Storage Loader
+        function getStoredQuestions() {
+            const saved = localStorage.getItem('win_cmd_questions');
+            return saved ? JSON.parse(saved) : defaultQuestions;
+        }
+
+        function saveQuestions(qs) {
+            localStorage.setItem('win_cmd_questions', JSON.stringify(qs));
+        }
+
+        function getStoredResults() {
+            const saved = localStorage.getItem('win_cmd_results');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveResult(res) {
+            const results = getStoredResults();
+            results.unshift(res);
+            localStorage.setItem('win_cmd_results', JSON.stringify(results));
+        }
+
+        // Teacher Portal Auth
+        let isTeacherAuthenticated = false;
+
+        function verifyTeacherPassword() {
+            const input = document.getElementById('teacher-password-input').value;
+            const errorMsg = document.getElementById('teacher-auth-error');
+
+            if (input === 'teacher123') {
+                isTeacherAuthenticated = true;
+                errorMsg.classList.add('hidden');
+                document.getElementById('teacher-auth-card').classList.add('hidden');
+                document.getElementById('teacher-dashboard-content').classList.remove('hidden');
+                renderTeacherDashboard();
+                showToast('教師權限驗證成功！');
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function lockTeacherPortal() {
+            isTeacherAuthenticated = false;
+            document.getElementById('teacher-password-input').value = '';
+            document.getElementById('teacher-auth-card').classList.remove('hidden');
+            document.getElementById('teacher-dashboard-content').classList.add('hidden');
+        }
+
+        // Main Tab Switcher
+        function switchMainTab(tab) {
+            const sections = {
+                commands: document.getElementById('main-commands-section'),
+                troubleshoot: document.getElementById('main-troubleshoot-section'),
+                quiz: document.getElementById('main-quiz-section'),
+                teacher: document.getElementById('main-teacher-section')
+            };
+
+            const btns = {
+                commands: document.getElementById('nav-commands-btn'),
+                troubleshoot: document.getElementById('nav-troubleshoot-btn'),
+                quiz: document.getElementById('nav-quiz-btn'),
+                teacher: document.getElementById('nav-teacher-btn')
+            };
+
+            Object.keys(sections).forEach(k => {
+                if (k === tab) {
+                    sections[k].classList.remove('hidden');
+                    if (k === 'teacher') {
+                        btns[k].className = "px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-amber-500 text-slate-950 font-bold shadow-md flex items-center gap-2";
+                    } else {
+                        btns[k].className = "px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-brand-600 text-white shadow-md flex items-center gap-2";
+                    }
+                } else {
+                    sections[k].classList.add('hidden');
+                    if (k === 'teacher') {
+                        btns[k].className = "px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-slate-800 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 flex items-center gap-2";
+                    } else {
+                        btns[k].className = "px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2";
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCategoryFilters();
+            renderCommands();
+            initWizard();
+        });
+
+        function renderCategoryFilters() {
+            const container = document.getElementById('category-filters');
+            container.innerHTML = categories.map(cat => {
+                const isActive = cat === currentCategory;
+                return `
+                    <button onclick="setCategory('${cat}')" class="px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                        isActive 
+                            ? 'bg-brand-500/20 text-brand-400 border border-brand-500/40' 
+                            : 'bg-slate-900/60 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-slate-200'
+                    }">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            renderCategoryFilters();
+            renderCommands();
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            const gridBtn = document.getElementById('view-grid-btn');
+            const tableBtn = document.getElementById('view-table-btn');
+            const gridContainer = document.getElementById('commands-container-grid');
+            const tableContainer = document.getElementById('commands-container-table');
+
+            if (mode === 'grid') {
+                gridContainer.classList.remove('hidden');
+                tableContainer.classList.add('hidden');
+                gridBtn.className = "px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-brand-400 shadow-sm flex items-center gap-1.5";
+                tableBtn.className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 flex items-center gap-1.5";
+            } else {
+                gridContainer.classList.add('hidden');
+                tableContainer.classList.remove('hidden');
+                tableBtn.className = "px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-brand-400 shadow-sm flex items-center gap-1.5";
+                gridBtn.className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 flex items-center gap-1.5";
+            }
+        }
+
+        function filterCommands() {
+            const input = document.getElementById('search-input');
+            const clearBtn = document.getElementById('clear-search');
+            searchQuery = input.value.trim().toLowerCase();
+            clearBtn.classList.toggle('hidden', searchQuery.length === 0);
+            renderCommands();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            searchQuery = '';
+            document.getElementById('clear-search').classList.add('hidden');
+            renderCommands();
+        }
+
+        function renderCommands() {
+            const filtered = commandsData.filter(cmd => {
+                const matchesCategory = currentCategory === '全部' || cmd.category === currentCategory;
+                const matchesSearch = searchQuery === '' || 
+                    cmd.name.toLowerCase().includes(searchQuery) ||
+                    cmd.desc.toLowerCase().includes(searchQuery) ||
+                    cmd.category.toLowerCase().includes(searchQuery) ||
+                    cmd.successKey.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            document.getElementById('command-count').textContent = `顯示 ${filtered.length} 個指令`;
+            const noResults = document.getElementById('no-results');
+
+            if (filtered.length === 0) {
+                noResults.classList.remove('hidden');
+                document.getElementById('commands-container-grid').innerHTML = '';
+                document.getElementById('table-body').innerHTML = '';
+                return;
+            }
+            noResults.classList.add('hidden');
+
+            document.getElementById('commands-container-grid').innerHTML = filtered.map(cmd => createCommandCardHTML(cmd)).join('');
+            document.getElementById('table-body').innerHTML = filtered.map(cmd => createCommandRowHTML(cmd)).join('');
+        }
+
+        function updateParam(cmdId, paramKey, val) {
+            if (!paramState[cmdId]) paramState[cmdId] = {};
+            paramState[cmdId][paramKey] = val;
+
+            const cmd = commandsData.find(c => c.id === cmdId);
+            if (!cmd) return;
+
+            let finalCmd = '';
+            if (cmd.paramType === 'domain-dns') {
+                finalCmd = cmd.buildCmd(paramState[cmdId]['domain'] || cmd.defaultParamDomain, paramState[cmdId]['dns'] || cmd.defaultParamDns);
+            } else if (cmd.paramType === 'host-port') {
+                finalCmd = cmd.buildCmd(paramState[cmdId]['host'] || cmd.defaultParamHost, paramState[cmdId]['port'] || cmd.defaultParamPort);
+            } else {
+                finalCmd = cmd.buildCmd(paramState[cmdId]['main'] || cmd.defaultParam);
+            }
+
+            const codeElem = document.getElementById(`code-${cmdId}`);
+            if (codeElem) codeElem.textContent = finalCmd;
+        }
+
+        function createCommandCardHTML(cmd) {
+            let activeCmdString = '';
+            if (!paramState[cmd.id]) paramState[cmd.id] = {};
+
+            if (cmd.paramType === 'domain-dns') {
+                activeCmdString = cmd.buildCmd(paramState[cmd.id]['domain'] || cmd.defaultParamDomain, paramState[cmd.id]['dns'] || cmd.defaultParamDns);
+            } else if (cmd.paramType === 'host-port') {
+                activeCmdString = cmd.buildCmd(paramState[cmd.id]['host'] || cmd.defaultParamHost, paramState[cmd.id]['port'] || cmd.defaultParamPort);
+            } else if (cmd.hasParams) {
+                activeCmdString = cmd.buildCmd(paramState[cmd.id]['main'] || cmd.defaultParam);
+            } else {
+                activeCmdString = cmd.buildCmd();
+            }
+
+            let paramInputsHTML = '';
+            if (cmd.hasParams) {
+                if (cmd.paramType === 'domain-dns') {
+                    paramInputsHTML = `
+                        <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
+                            <div>
+                                <label class="text-slate-400 mb-1 block">目標網域</label>
+                                <input type="text" oninput="updateParam('${cmd.id}', 'domain', this.value)" value="${paramState[cmd.id]['domain'] || cmd.defaultParamDomain}" 
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 font-mono">
+                            </div>
+                            <div>
+                                <label class="text-slate-400 mb-1 block">DNS 伺服器 IP</label>
+                                <input type="text" oninput="updateParam('${cmd.id}', 'dns', this.value)" value="${paramState[cmd.id]['dns'] || cmd.defaultParamDns}" 
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 font-mono">
+                            </div>
+                        </div>
+                    `;
+                } else if (cmd.paramType === 'host-port') {
+                    paramInputsHTML = `
+                        <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
+                            <div>
+                                <label class="text-slate-400 mb-1 block">目標 IP / 網域</label>
+                                <input type="text" oninput="updateParam('${cmd.id}', 'host', this.value)" value="${paramState[cmd.id]['host'] || cmd.defaultParamHost}" 
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 font-mono">
+                            </div>
+                            <div>
+                                <label class="text-slate-400 mb-1 block">Port 埠號</label>
+                                <input type="text" oninput="updateParam('${cmd.id}', 'port', this.value)" value="${paramState[cmd.id]['port'] || cmd.defaultParamPort}" 
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 font-mono">
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    paramInputsHTML = `
+                        <div class="mt-3 text-xs">
+                            <label class="text-slate-400 mb-1 block">自訂參數</label>
+                            <input type="text" oninput="updateParam('${cmd.id}', 'main', this.value)" value="${paramState[cmd.id]['main'] || cmd.defaultParam}" 
+                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 font-mono">
+                        </div>
+                    `;
+                }
+            }
+
+            return `
+                <div class="bg-cardBg rounded-2xl p-5 border border-slate-800 shadow-xl flex flex-col justify-between glow-hover transition-all duration-300">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-mono text-base font-bold text-brand-400 tracking-wide">${cmd.name}</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700/60 whitespace-nowrap">
+                                ${cmd.category}
+                            </span>
+                        </div>
+                        <p class="text-slate-300 text-xs mb-4 leading-relaxed">${cmd.desc}</p>
+
+                        <div class="relative bg-slate-950 border border-slate-800 rounded-xl p-3 mb-3">
+                            <code id="code-${cmd.id}" class="font-mono text-xs text-emerald-400 break-all">${activeCmdString}</code>
+                            <button onclick="copyToClipboard('${cmd.id}')" title="複製指令" 
+                                class="absolute right-2 top-2 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded text-[11px] transition-colors border border-slate-700 flex items-center gap-1">
+                                <i class="fa-regular fa-copy"></i> 複製
+                            </button>
+                        </div>
+
+                        ${paramInputsHTML}
+
+                        <div class="mt-3 bg-slate-900/60 rounded-lg p-2.5 border border-slate-800/80">
+                            <div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 mb-1">
+                                <i class="fa-solid fa-circle-check"></i> 成功判斷關鍵
+                            </div>
+                            <p class="text-[11px] text-slate-400">${cmd.successKey}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-800/60">
+                        <details class="group text-xs">
+                            <summary class="cursor-pointer text-slate-400 hover:text-slate-200 flex items-center justify-between select-none font-medium">
+                                <span class="flex items-center gap-1.5"><i class="fa-regular fa-lightbulb text-amber-400"></i> 維運小技巧</span>
+                                <i class="fa-solid fa-chevron-down text-[10px] group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="mt-2 text-slate-400 leading-relaxed bg-slate-900/40 p-2 rounded border border-slate-800/40 text-[11px]">${cmd.tip}</p>
+                        </details>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createCommandRowHTML(cmd) {
+            const activeCmdString = cmd.hasParams ? cmd.buildCmd(cmd.defaultParam || cmd.defaultParamHost || cmd.defaultParamDomain) : cmd.buildCmd();
+            return `
+                <tr class="hover:bg-slate-800/40 transition-colors">
+                    <td class="px-5 py-3.5 font-mono text-xs font-bold text-brand-400">${cmd.name}</td>
+                    <td class="px-5 py-3.5"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 border border-slate-700/60">${cmd.category}</span></td>
+                    <td class="px-5 py-3.5 text-xs text-slate-300">${cmd.desc}</td>
+                    <td class="px-5 py-3.5 text-xs text-emerald-400">${cmd.successKey}</td>
+                    <td class="px-5 py-3.5 text-right">
+                        <button onclick="copyTextDirect('${activeCmdString}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded border border-slate-700 flex items-center gap-1 ml-auto">
+                            <i class="fa-regular fa-copy"></i> 複製
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function copyToClipboard(cmdId) {
+            const codeElem = document.getElementById(`code-${cmdId}`);
+            if (codeElem) copyTextDirect(codeElem.textContent);
+        }
+
+        function copyTextDirect(text) {
+            const input = document.createElement('textarea');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast(`已複製指令: "${text}"`);
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-slate-900 border border-brand-500/50 text-slate-100 text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 transition-all duration-300 pointer-events-auto";
+            toast.innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400 text-base"></i><span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Diagnostic Wizard Logic
+        let currentStep = 1;
+        const wizardSteps = {
+            1: {
+                title: "第一步：測試本機網路協定堆疊",
+                question: "請在 CMD 執行：<code class='text-brand-400 font-mono'>ping 127.0.0.1</code>，是否有收到回應？",
+                cmd: "ping 127.0.0.1",
+                passNext: 2,
+                failResult: { problem: "本機 TCP/IP 協定堆疊異常，網卡驅動可能損毀。", solution: "請以管理員身分執行以下重置指令並重啟電腦：", fixCmd: "netsh int ip reset" }
+            },
+            2: {
+                title: "第二步：檢測區域網路 gateway (路由器)",
+                question: "先輸入 <code class='text-brand-400 font-mono'>ipconfig</code> 查看 Default Gateway IP，並 ping 該 IP (如 192.168.1.1)，是否有回應？",
+                cmd: "ipconfig",
+                passNext: 3,
+                failResult: { problem: "無法連通區域網路路由器/閘道器。可能是實體線路中斷或未取得 IP。", solution: "請嘗試重新申請 IP 位址：", fixCmd: "ipconfig /release && ipconfig /renew" }
+            },
+            3: {
+                title: "第三步：檢測外網 IP 連通性 (繞過 DNS)",
+                question: "請在 CMD 執行：<code class='text-brand-400 font-mono'>ping 8.8.8.8</code>，是否成功收到回應？",
+                cmd: "ping 8.8.8.8",
+                passNext: 4,
+                failResult: { problem: "區域網路正常，但無法連接外網。可能是小烏龜/路由器連不上外網。", solution: "追蹤封包停在何處節點：", fixCmd: "tracert 8.8.8.8" }
+            },
+            4: {
+                title: "第四步：檢測 DNS 域名解析功能",
+                question: "請在 CMD 執行：<code class='text-brand-400 font-mono'>nslookup google.com</code>，是否能解析出 IP 地址？",
+                cmd: "nslookup google.com",
+                passNext: 5,
+                failResult: { problem: "網路通暢但 DNS 伺服器無法將域名轉為 IP。", solution: "請嘗試刷新本機 DNS 快取：", fixCmd: "ipconfig /flushdns" }
+            },
+            5: { title: "第五步：診斷完成，網路運作正常！", isFinal: true, message: "若特定網站仍打不開，可能是該伺服器維護中或快取問題。" }
+        };
+
+        function initWizard() { renderWizardStep(1); }
+
+        function renderWizardStep(stepNum) {
+            currentStep = stepNum;
+            const container = document.getElementById('wizard-content');
+            const stepData = wizardSteps[stepNum];
+
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`wiz-step-${i}-indicator`).className = i <= stepNum ? "h-2 rounded-full bg-brand-500 transition-all" : "h-2 rounded-full bg-slate-800 transition-all";
+            }
+
+            if (stepData.isFinal) {
+                container.innerHTML = `
+                    <div class="text-center py-6 space-y-4">
+                        <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl"><i class="fa-solid fa-circle-check"></i></div>
+                        <h3 class="text-xl font-bold text-white">${stepData.title}</h3>
+                        <p class="text-sm text-slate-300 max-w-md mx-auto">${stepData.message}</p>
+                        <button onclick="resetWizard()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-semibold">重新排查</button>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-5">
+                    <h3 class="text-base font-bold text-brand-400 flex items-center gap-2">
+                        <span class="bg-brand-500/20 text-brand-300 px-2.5 py-0.5 rounded-md text-xs">Step ${stepNum}</span>
+                        ${stepData.title}
+                    </h3>
+                    <p class="text-sm text-slate-200 leading-relaxed">${stepData.question}</p>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                        <code class="font-mono text-xs text-emerald-400">${stepData.cmd}</code>
+                        <button onclick="copyTextDirect('${stepData.cmd}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs"><i class="fa-regular fa-copy"></i> 複製</button>
+                    </div>
+                    <div class="flex items-center gap-3 pt-2">
+                        <button onclick="wizardAnswer(true)" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl"><i class="fa-solid fa-check"></i> 成功 (有回應)</button>
+                        <button onclick="wizardAnswer(false)" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold rounded-xl"><i class="fa-solid fa-xmark"></i> 失敗 (無回應)</button>
+                    </div>
+                </div>`;
+        }
+
+        function wizardAnswer(passed) {
+            const stepData = wizardSteps[currentStep];
+            if (passed) {
+                renderWizardStep(stepData.passNext);
+            } else {
+                const fail = stepData.failResult;
+                document.getElementById('wizard-content').innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-start gap-3">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-400 text-lg"></i>
+                            <div><h4 class="text-sm font-bold text-rose-300">診斷結果：發現異常</h4><p class="text-xs text-slate-300 mt-1">${fail.problem}</p></div>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-xs text-slate-400">${fail.solution}</p>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                                <code class="font-mono text-xs text-brand-400">${fail.fixCmd}</code>
+                                <button onclick="copyTextDirect('${fail.fixCmd}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs"><i class="fa-regular fa-copy"></i> 複製修復指令</button>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between">
+                            <button onclick="renderWizardStep(${currentStep})" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i> 重試本步驟</button>
+                            <button onclick="resetWizard()" class="text-xs text-brand-400 hover:underline">重新排查</button>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function resetWizard() { renderWizardStep(1); }
+
+        let activeQuizQuestions = [];
+        let currentQuizIdx = 0;
+        let studentAnswers = [];
+        let studentName = '';
+        let quizStartTime = null;
+        let quizTimerInterval = null;
+
+        function startQuiz() {
+            const nameInput = document.getElementById('student-name-input').value.trim();
+            if (!nameInput) {
+                showToast('請先輸入學生姓名與學號！');
+                return;
+            }
+
+            studentName = nameInput;
+            const bank = getStoredQuestions();
+            if (bank.length === 0) {
+                showToast('題庫中尚無題目，請聯繫教師新增題目。');
+                return;
+            }
+
+            // Shuffle or pick questions
+            activeQuizQuestions = [...bank].sort(() => 0.5 - Math.random());
+            currentQuizIdx = 0;
+            studentAnswers = new Array(activeQuizQuestions.length).fill(null);
+
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-active-screen').classList.remove('hidden');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            document.getElementById('quiz-student-display').textContent = studentName;
+
+            quizStartTime = Date.now();
+            clearInterval(quizTimerInterval);
+            quizTimerInterval = setInterval(updateQuizTimer, 1000);
+
+            renderQuizQuestion();
+        }
+
+        function updateQuizTimer() {
+            const elapsedSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+            const mins = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+            const secs = String(elapsedSeconds % 60).padStart(2, '0');
+            document.getElementById('quiz-timer').textContent = `${mins}:${secs}`;
+        }
+
+        function renderQuizQuestion() {
+            const q = activeQuizQuestions[currentQuizIdx];
+            document.getElementById('quiz-progress-text').textContent = `第 ${currentQuizIdx + 1} / ${activeQuizQuestions.length} 題`;
+            document.getElementById('quiz-question-title').textContent = q.title;
+
+            const optsContainer = document.getElementById('quiz-options-container');
+            optsContainer.innerHTML = q.options.map((opt, idx) => {
+                const isSelected = studentAnswers[currentQuizIdx] === idx;
+                return `
+                    <button onclick="selectQuizOption(${idx})" class="w-full text-left p-3.5 rounded-xl text-xs border transition-all flex items-center justify-between ${
+                        isSelected 
+                            ? 'bg-brand-500/20 border-brand-500 text-brand-300 font-semibold' 
+                            : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'
+                    }">
+                        <span>${String.fromCharCode(65 + idx)}. ${opt}</span>
+                        ${isSelected ? '<i class="fa-solid fa-circle-check text-brand-400"></i>' : ''}
+                    </button>
+                `;
+            }).join('');
+
+            // Controls Visibility
+            document.getElementById('quiz-prev-btn').classList.toggle('hidden', currentQuizIdx === 0);
+            if (currentQuizIdx === activeQuizQuestions.length - 1) {
+                document.getElementById('quiz-next-btn').classList.add('hidden');
+                document.getElementById('quiz-submit-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('quiz-next-btn').classList.remove('hidden');
+                document.getElementById('quiz-submit-btn').classList.add('hidden');
+            }
+        }
+
+        function selectQuizOption(optIdx) {
+            studentAnswers[currentQuizIdx] = optIdx;
+            renderQuizQuestion();
+        }
+
+        function prevQuizQuestion() {
+            if (currentQuizIdx > 0) {
+                currentQuizIdx--;
+                renderQuizQuestion();
+            }
+        }
+
+        function nextQuizQuestion() {
+            if (currentQuizIdx < activeQuizQuestions.length - 1) {
+                currentQuizIdx++;
+                renderQuizQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(quizTimerInterval);
+            const timeTaken = document.getElementById('quiz-timer').textContent;
+
+            // Calculate Score
+            let correctCount = 0;
+            activeQuizQuestions.forEach((q, idx) => {
+                if (studentAnswers[idx] === q.answer) correctCount++;
+            });
+
+            const totalScore = Math.round((correctCount / activeQuizQuestions.length) * 100);
+
+            // Save result to LocalStorage
+            const resultPayload = {
+                id: Date.now(),
+                studentName: studentName,
+                score: totalScore,
+                correctCount: correctCount,
+                totalQuestions: activeQuizQuestions.length,
+                timeTaken: timeTaken,
+                timestamp: new Date().toLocaleString('zh-TW')
+            };
+
+            saveResult(resultPayload);
+
+            // Render Results View
+            document.getElementById('quiz-active-screen').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.remove('hidden');
+            document.getElementById('result-score').textContent = `${totalScore} 分`;
+            document.getElementById('result-student-name').textContent = `學員：${studentName}`;
+            document.getElementById('result-time-taken').textContent = `答對率：${correctCount}/${activeQuizQuestions.length} 題 | 總花費時間：${timeTaken}`;
+
+            // Render Detailed Analysis
+            const analysisContainer = document.getElementById('result-analysis-container');
+            analysisContainer.innerHTML = activeQuizQuestions.map((q, idx) => {
+                const userAns = studentAnswers[idx];
+                const isCorrect = userAns === q.answer;
+                return `
+                    <div class="bg-slate-900 border ${isCorrect ? 'border-emerald-500/30' : 'border-rose-500/30'} rounded-xl p-4 space-y-2 text-xs">
+                        <div class="flex items-start justify-between gap-2">
+                            <h5 class="font-bold text-slate-200">Q${idx + 1}. ${q.title}</h5>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isCorrect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                                ${isCorrect ? '答對' : '答錯'}
+                            </span>
+                        </div>
+                        <p class="text-slate-400">您的回答：<span class="${isCorrect ? 'text-emerald-400 font-semibold' : 'text-rose-400 font-semibold'}">${userAns !== null ? String.fromCharCode(65 + userAns) + '. ' + q.options[userAns] : '未回答'}</span></p>
+                        ${!isCorrect ? `<p class="text-emerald-400">正確答案：<span>${String.fromCharCode(65 + q.answer)}. ${q.options[q.answer]}</span></p>` : ''}
+                        <p class="text-slate-400 bg-slate-950 p-2 rounded border border-slate-800 leading-relaxed"><i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> ${q.explanation}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function resetQuizScreen() {
+            document.getElementById('quiz-start-screen').classList.remove('hidden');
+            document.getElementById('quiz-active-screen').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+        }
+
+        function renderTeacherDashboard() {
+            renderStudentResultsTable();
+            renderQuestionBankList();
+        }
+
+        function switchTeacherTab(tab) {
+            const resultsView = document.getElementById('teacher-view-results');
+            const questionsView = document.getElementById('teacher-view-questions');
+            const resultsBtn = document.getElementById('teacher-tab-results-btn');
+            const questionsBtn = document.getElementById('teacher-tab-questions-btn');
+
+            if (tab === 'results') {
+                resultsView.classList.remove('hidden');
+                questionsView.classList.add('hidden');
+                resultsBtn.className = "pb-2.5 text-sm font-bold text-amber-400 border-b-2 border-amber-400 transition-all flex items-center gap-2";
+                questionsBtn.className = "pb-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all flex items-center gap-2";
+            } else {
+                questionsView.classList.remove('hidden');
+                resultsView.classList.add('hidden');
+                questionsBtn.className = "pb-2.5 text-sm font-bold text-amber-400 border-b-2 border-amber-400 transition-all flex items-center gap-2";
+                resultsBtn.className = "pb-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all flex items-center gap-2";
+            }
+        }
+
+        function renderStudentResultsTable() {
+            const results = getStoredResults();
+            document.getElementById('results-count-badge').textContent = results.length;
+            const tbody = document.getElementById('student-results-tbody');
+            const noResults = document.getElementById('no-student-results');
+
+            if (results.length === 0) {
+                tbody.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+            noResults.classList.add('hidden');
+
+            tbody.innerHTML = results.map(res => `
+                <tr class="hover:bg-slate-800/40 transition-colors">
+                    <td class="px-5 py-3.5 text-xs text-slate-400">${res.timestamp}</td>
+                    <td class="px-5 py-3.5 text-xs font-bold text-white">${res.studentName}</td>
+                    <td class="px-5 py-3.5 text-xs font-mono font-bold ${res.score >= 60 ? 'text-emerald-400' : 'text-rose-400'}">${res.score} 分</td>
+                    <td class="px-5 py-3.5 text-xs font-mono text-slate-300">${res.timeTaken}</td>
+                    <td class="px-5 py-3.5 text-xs text-slate-300">${res.correctCount} / ${res.totalQuestions} 題</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportResultsCSV() {
+            const results = getStoredResults();
+            if (results.length === 0) {
+                showToast('目前沒有可匯出的成績紀錄！');
+                return;
+            }
+
+            let csvContent = "\uFEFF測驗時間,學生姓名/學號,得分,花費時間,答對題數,總題數\n";
+            results.forEach(r => {
+                csvContent += `"${r.timestamp}","${r.studentName}",${r.score},"${r.timeTaken}",${r.correctCount},${r.totalQuestions}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Windows網路指令測驗成績_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('已成功匯出成績 CSV 檔案！');
+        }
+
+        function clearStudentResults() {
+            if (confirm('確定要清除所有學生的測驗紀錄嗎？此操作無法復原。')) {
+                localStorage.removeItem('win_cmd_results');
+                renderStudentResultsTable();
+                showToast('已清除所有成績紀錄。');
+            }
+        }
+
+        // Question Bank CRUD Operations
+        let editingQuestionId = null;
+
+        function renderQuestionBankList() {
+            const questions = getStoredQuestions();
+            document.getElementById('questions-count-badge').textContent = questions.length;
+            const container = document.getElementById('questions-bank-list');
+
+            if (questions.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">題庫中目前沒有題目</p>';
+                return;
+            }
+
+            container.innerHTML = questions.map((q, idx) => `
+                <div class="bg-cardBg border border-slate-800 rounded-xl p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                            <span class="bg-brand-500/20 text-brand-300 px-2 py-0.5 rounded">Q${idx + 1}</span>
+                            ${q.title}
+                        </h4>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openQuestionModal('${q.id}')" class="text-xs text-brand-400 hover:text-brand-300"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteQuestion('${q.id}')" class="text-xs text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+                        ${q.options.map((opt, optIdx) => `
+                            <div class="${optIdx === q.answer ? 'text-emerald-400 font-bold' : ''}">
+                                ${String.fromCharCode(65 + optIdx)}. ${opt} ${optIdx === q.answer ? '✓' : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <p class="text-[11px] text-slate-400 bg-slate-950 p-2 rounded border border-slate-800/80"><span class="text-amber-400 font-semibold">解析：</span>${q.explanation}</p>
+                </div>
+            `).join('');
+        }
+
+        function openQuestionModal(qId = null) {
+            editingQuestionId = qId;
+            const modal = document.getElementById('question-modal');
+            modal.classList.remove('hidden');
+
+            if (qId) {
+                document.getElementById('modal-title').textContent = '編輯題目';
+                const questions = getStoredQuestions();
+                const q = questions.find(item => item.id === qId);
+                if (q) {
+                    document.getElementById('modal-q-title').value = q.title;
+                    document.getElementById('modal-opt-0').value = q.options[0] || '';
+                    document.getElementById('modal-opt-1').value = q.options[1] || '';
+                    document.getElementById('modal-opt-2').value = q.options[2] || '';
+                    document.getElementById('modal-opt-3').value = q.options[3] || '';
+                    document.getElementById('modal-correct-idx').value = q.answer;
+                    document.getElementById('modal-explanation').value = q.explanation;
+                }
+            } else {
+                document.getElementById('modal-title').textContent = '新增題目';
+                document.getElementById('modal-q-title').value = '';
+                document.getElementById('modal-opt-0').value = '';
+                document.getElementById('modal-opt-1').value = '';
+                document.getElementById('modal-opt-2').value = '';
+                document.getElementById('modal-opt-3').value = '';
+                document.getElementById('modal-correct-idx').value = '0';
+                document.getElementById('modal-explanation').value = '';
+            }
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('question-modal').classList.add('hidden');
+        }
+
+        function saveQuestionFromModal() {
+            const title = document.getElementById('modal-q-title').value.trim();
+            const opt0 = document.getElementById('modal-opt-0').value.trim();
+            const opt1 = document.getElementById('modal-opt-1').value.trim();
+            const opt2 = document.getElementById('modal-opt-2').value.trim();
+            const opt3 = document.getElementById('modal-opt-3').value.trim();
+            const correctIdx = parseInt(document.getElementById('modal-correct-idx').value);
+            const explanation = document.getElementById('modal-explanation').value.trim();
+
+            if (!title || !opt0 || !opt1 || !opt2 || !opt3 || !explanation) {
+                showToast('請完整填寫題目、四個選項與解析說明！');
+                return;
+            }
+
+            let questions = getStoredQuestions();
+
+            if (editingQuestionId) {
+                questions = questions.map(q => q.id === editingQuestionId ? {
+                    id: editingQuestionId,
+                    title,
+                    options: [opt0, opt1, opt2, opt3],
+                    answer: correctIdx,
+                    explanation
+                } : q);
+                showToast('題目修訂成功！');
+            } else {
+                questions.push({
+                    id: 'q_' + Date.now(),
+                    title,
+                    options: [opt0, opt1, opt2, opt3],
+                    answer: correctIdx,
+                    explanation
+                });
+                showToast('已新增題目至題庫！');
+            }
+
+            saveQuestions(questions);
+            closeQuestionModal();
+            renderQuestionBankList();
+        }
+
+        function deleteQuestion(qId) {
+            if (confirm('確定要刪除這道題目嗎？')) {
+                let questions = getStoredQuestions();
+                questions = questions.filter(q => q.id !== qId);
+                saveQuestions(questions);
+                renderQuestionBankList();
+                showToast('題目已刪除。');
+            }
+        }
+    </script>
+</body>
+</html>
